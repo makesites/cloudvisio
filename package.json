@@ -1,0 +1,31 @@
+{
+  "name": "cloudvisio",
+  "version": "0.0.1",
+  "author": "Make Sites <info@makesites.org> (makesites.org)",
+  "contributors": [
+    { "name": "Makis Tracend", "email": "makis.tracend@gmail.com" }
+  ],
+  "description": "HTML5 visual representation of any JSON structure",
+  "homepage": "http://coudvis.io", 
+  "keywords": ["cloud","visio","vector","visualization","graph"],
+  "main": "index",
+  "bin": { },
+  "engines": { "node": ">0.4.x" }, 
+  "dependencies": {
+    "express": ">= 2.3.2"
+    "socket.io": ">= 0.6.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/makesites/cloudvisio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/makesites/cloudvisio/issues"
+  }, 
+  "licenses": [
+    {
+      "type": "Apache License, Version 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ]
+}
