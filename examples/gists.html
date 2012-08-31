@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/2.10.0/d3.v2.min.js"></script>
+<script type="text/javascript" src="../lib/cloudvisio.js"></script>
+
+
+<!-- Example code -->
+<script type="text/javascript">
+
+// make variable
+var user = "tracend";
+
+$(function(){
+	
+	// insert code here...
+	$.getJSON("https://api.github.com/users/"+ user +"/gists?callback=?", function(data){
+		
+		console.log( data );
+		cloudvisio("#vis", data);
+		
+	});
+	
+});
+
+</script>
+
+<!-- Example styling -->
+<style type="text/css">
+
+
+</style>
+
+</head>
+<body>
+
+<div id="vis"><!-- --></div>
+
+</body>
+</html>
