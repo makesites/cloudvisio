@@ -6,14 +6,13 @@
     { "name": "Makis Tracend", "email": "makis.tracend@gmail.com" }
   ],
   "description": "HTML5 visual representation of any JSON structure",
-  "homepage": "http://coudvis.io", 
+  "homepage": "http://makesites.org/cloudvisio", 
   "keywords": ["cloud","visio","vector","visualization","graph"],
   "main": "index",
   "bin": { },
-  "engines": { "node": ">0.4.x" }, 
+  "engines": { "node": "0.6.x" }, 
   "dependencies": {
-    "express": ">= 2.3.2"
-    "socket.io": ">= 0.6.2"
+    "d3": ">0.0.1"
   },
   "repository": {
     "type": "git",
