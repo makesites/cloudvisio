@@ -1,19 +1,13 @@
 {
   "name": "cloudvisio",
-  "version": "0.0.1",
-  "author": "Make Sites <info@makesites.org> (makesites.org)",
+  "version": "0.0.3",
+  "description": "[WIP] Visual Representation of cloud data",
+  "author": "makesites",
   "contributors": [
-    { "name": "Makis Tracend", "email": "makis.tracend@gmail.com" }
+    { "name": "Makis Tracend", "email": "makis@makesit.es" }
   ],
-  "description": "HTML5 visual representation of any JSON structure",
   "homepage": "http://makesites.org/cloudvisio", 
-  "keywords": ["cloud","visio","vector","visualization","graph"],
-  "main": "index",
-  "bin": { },
-  "engines": { "node": "0.6.x" }, 
-  "dependencies": {
-    "d3": ">0.0.1"
-  },
+  "keywords": ["cloudvisio", "cloud", "visio", "visualize", "vector", "svg", "d3", "webgl", "visualization","graph", "json"],
   "repository": {
     "type": "git",
     "url": "git://github.com/makesites/cloudvisio.git"
@@ -26,5 +20,11 @@
       "type": "Apache License, Version 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0"
     }
-  ]
+  ], 
+  "engines": { "node": "0.8.x" }, 
+  "main": "index",
+  "dependencies": {
+    "express": "~3.x", 
+    "d3": "~3.x"
+  }
 }
