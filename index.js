@@ -1,1 +1,1 @@
-module.exports = require('./lib/cloudvisio.js');
+module.exports = require('./lib/main');
