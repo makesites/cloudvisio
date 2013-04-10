@@ -1,6 +1,6 @@
 {
   "name": "cloudvisio",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "[WIP] Visual Representation of cloud data",
   "author": "makesites",
   "contributors": [
@@ -26,5 +26,11 @@
   "dependencies": {
     "d3": "3.x",
 	"jsdom" : "0.x"
-  }
+  }, 
+    "devDependencies" : {
+        "commander" : "1.x",
+		"jshint" : "1.x",
+        "uglify-js" : "2.x",
+		"hbs" : "1.x"
+    }
 }
