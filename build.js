@@ -26,6 +26,11 @@ concat({
 		'lib/_start.js',
 		'lib/options.js',
 		'lib/constructor.js',
+		'lib/data.js',
+		'lib/math.js',
+		'lib/language.js',
+		'lib/compile.js',
+		'lib/utils.js',
 		'lib/_end.js'
     ],
     dest : 'build/cloudvisio.js'
