@@ -14,27 +14,17 @@ var vis;
 
 $(function(){
 	
-	cloudvisio = new Cloudvisio();
-	requestUser();
-});
-
-function requestUser(){
-	var user = prompt("Please enter your Github username","tracend");
-	if (user!=null && user!=""){
-		getData( user );
-	}
-}
-
-function getData( user ){
-	
-	$.getJSON("https://api.github.com/users/"+ user +"/gists?callback=?", function(response){
-		if( response.meta.status == 200 ){ 
-			cloudvisio.data( response.data );
-			console.log( cloudvisio.data() );
-		}
+	// insert code here...
+	vis = new Cloudvisio();
+	// 
+	$.getJSON("data/population.json", function( data ){
+		//
+		vis.set( data );
+		// 
+		vis.render();
 	});
 	
-}
+});
 
 </script>
 
@@ -48,6 +38,10 @@ function getData( user ){
 
 </head>
 <body>
+
+<h2>County population</h2>
+
+<p>This is an example using already <a href="data/population.json">parsed data</a></p>
 
 <div id="vis"><!-- --></div>
 

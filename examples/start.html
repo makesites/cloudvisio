@@ -14,27 +14,12 @@ var vis;
 
 $(function(){
 	
-	cloudvisio = new Cloudvisio();
-	requestUser();
+	// insert code here...
+	vis = new Cloudvisio();
+	console.log( vis.description() );
+	alert( vis.description() );
+	
 });
-
-function requestUser(){
-	var user = prompt("Please enter your Github username","tracend");
-	if (user!=null && user!=""){
-		getData( user );
-	}
-}
-
-function getData( user ){
-	
-	$.getJSON("https://api.github.com/users/"+ user +"/gists?callback=?", function(response){
-		if( response.meta.status == 200 ){ 
-			cloudvisio.data( response.data );
-			console.log( cloudvisio.data() );
-		}
-	});
-	
-}
 
 </script>
 
