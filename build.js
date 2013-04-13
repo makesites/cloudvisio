@@ -29,7 +29,7 @@ concat({
 		'lib/data.js',
 		'lib/math.js',
 		'lib/language.js',
-		'lib/compile.js',
+		'lib/render.js',
 		'lib/utils.js',
 		'lib/_end.js'
     ],
