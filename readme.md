@@ -13,19 +13,19 @@ It operates one level abobe D3, allowing you to create useful results (axis) bas
 
 ## Install 
 
-For server-side processing you can use npm: 
-```
-npm install cloudvisio
-```
-
 For client-side processing you can install with bower:
 ```
 bower install cloudvisio
 ```
 
-If you'd like to build the clinet lib from the you can use [browserify](http://browserify.org/)
+For server-side processing you can use npm (still work in progress): 
 ```
-browserify -x ./node_modules/d3/index-browserify.js index.js > build/cloudvisio.js
+npm install cloudvisio
+```
+
+If you'd like to build the client lib from the you can use [browserify](http://browserify.org/)
+```
+browserify -x ./node_modules/d3/index-browserify.js index/index-browserify.js > build/cloudvisio.bundle.js
 ```
 
 ## Usage
@@ -73,5 +73,5 @@ Lookup the raw data for the search term (regular expression) you are looking for
 
 Find all the occurances of a condition in the raw data, expressed by a regular expression. Returns a number. 
 
-### match()
+### ...
 
