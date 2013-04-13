@@ -1,7 +1,10 @@
 if( !window.Cloudvisio ) (function( d3 ){
 var defaults = {
 	el: "#vis", 
-	view: "graph"
+	view: "graph", 
+	container: "svg", 
+	width: "100%", 
+	height: "100%"
 };
 // dependencies
 //var d3 = require("d3");
@@ -11,11 +14,17 @@ Cloudvisio = function( options ){
 	options = options || {};
 	
 	// merge with defaults
-	options.el = options.el || defaults.el;
+	this.el = options.el || defaults.el;
 	options.view = options.view || defaults.view;
-	
-	// save for later...
+	options.container = options.container || defaults.container;
+	options.width = options.width || defaults.width;
+	options.height = options.height || defaults.height;
+	// save options for later...
 	this.options = options;
+	
+	// setup 
+	this._container();
+	
 };
 
 Cloudvisio.prototype = {
@@ -95,10 +104,27 @@ Cloudvisio.prototype.verbalize = function(){
 // Helpers
 
 
-Cloudvisio.prototype.compile = function(){
-	
+// rendering the visualization (generated once)
+Cloudvisio.prototype.render = function(){
+	d3.select( this.el + " "+ this.options.container).data(this.models);
+	//.transition().duration(500).call(chart);
 };
 
+// updating visualization (on every tick)
+Cloudvisio.prototype.update = function(){
+	d3.select( this.el + " "+ this.options.container).data(this.models);
+	//.transition().duration(500).call(chart);
+};
+
+// Internal methods
+// creates the chart container
+Cloudvisio.prototype._container = function(){
+	d3.select( this.el )
+		.append( this.options.container )
+		.attr("width", this.options.width)
+		.attr("height", this.options.height);
+};
+	
 
 // Helpers
 // - load template
