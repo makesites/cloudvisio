@@ -26,6 +26,7 @@ concat({
 		'lib/_start.js',
 		'lib/options.js',
 		'lib/constructor.js',
+		'lib/chart.js',
 		'lib/data.js',
 		'lib/math.js',
 		'lib/language.js',
