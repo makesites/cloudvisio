@@ -87,3 +87,12 @@ Cloudvisio supports some of D3 layouts out of the box.
 ...
 
 In addition it can accept custom layouts using the ```chart()``` method. 
+
+
+## Credits
+
+Created by [Makis Tracend](http://tracend.me)
+
+Distributed through [Makesites.org](http://makesites.org/)
+
+Released under the [MIT license](http://makesites.org/licenses/MIT)
