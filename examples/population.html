@@ -15,7 +15,9 @@ var vis;
 $(function(){
 	
 	// insert code here...
-	vis = new Cloudvisio();
+	vis = new Cloudvisio({
+		layout: "pie"
+	});
 	// 
 	$.getJSON("data/population.json", function( data ){
 		//
@@ -41,7 +43,7 @@ $(function(){
 
 <h2>Country population</h2>
 
-<p>This is an example using already <a href="data/population.json">parsed data</a></p>
+<p>In this example we are using <a href="data/population.json">normalized data</a>.</p>
 
 <div id="vis"><!-- --></div>
 

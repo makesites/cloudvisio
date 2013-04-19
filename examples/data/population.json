@@ -1,10 +1,18 @@
 [
     {
         "country": "Australia",
-        "population": 22
+        "population": 23
     },
     {
         "country": "USA",
-        "population": 314
+        "population": 316
+    },
+    {
+        "country": "China",
+        "population": 1354
+    },
+    {
+        "country": "Russia",
+        "population": 143
     }
 ]
