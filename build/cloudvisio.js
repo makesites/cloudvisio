@@ -4,7 +4,13 @@ var defaults = {
 	layout: "stack", 
 	container: "svg", 
 	width: "100%", 
-	height: "100%"
+	height: "100%", 
+	// The color scale will be assigned by index, but if you define your data using objects, you could pass
+	// in a named field from the data object instead, such as `d.name`. Colors are assigned lazily, 
+	// so if you want deterministic behavior, define a domain for the color scale.
+	colors: d3.scale.category20c()
+	//colors: d3.scale.ordinal().range(["darkblue", "blue", "lightblue"]);
+	
 };
 // dependencies
 //var d3 = require("d3");
@@ -19,6 +25,7 @@ Cloudvisio = function( options ){
 	options.container = options.container || defaults.container;
 	options.width = options.width || defaults.width;
 	options.height = options.height || defaults.height;
+	options.colors = options.colors || defaults.colors;
 	// save options for later...
 	this.options = options;
 	// add the appropriate chart
@@ -134,6 +141,8 @@ Cloudvisio.prototype.charts = {};
 // stacked/bar chart
 Cloudvisio.prototype.charts.stack = function() {
 
+	var self = this;
+	
 	var w = 960,
 	h = 500, 
 	label = "country", 
@@ -154,9 +163,8 @@ Cloudvisio.prototype.charts.stack = function() {
             .append("svg:g")
             .attr("transform", "translate(10,470)");
 			
-	x = d3.scale.ordinal().rangeRoundBands([0, w-50]);
-	y = d3.scale.linear().range([0, h-50]);
-	z = d3.scale.ordinal().range(["darkblue", "blue", "lightblue"]);
+	x = d3.scale.ordinal().rangeRoundBands([0, w]);
+	y = d3.scale.linear().range([0, h]);
 	
 	var data = d3.layout.stack()( remapped );
 	
@@ -168,8 +176,8 @@ Cloudvisio.prototype.charts.stack = function() {
 	.data( data )
 	.enter().append("svg:g")
 	.attr("class", "valgroup")
-	.style("fill", function(d, i) { return z(i); })
-	.style("stroke", function(d, i) { return d3.rgb(z(i)).darker(); });
+	.style("fill", function(d, i) { return self.color(i); })
+	.style("stroke", function(d, i) { return d3.rgb( self.color(i)).darker(); });
 	
 	// Add a rect for each date.
 	var rect = valgroup.selectAll("rect")
@@ -184,13 +192,12 @@ Cloudvisio.prototype.charts.stack = function() {
 
 Cloudvisio.prototype.charts.pie = function() {
 
- 
-var m = 0,
-    r = 100,
-	ir = 0,
-    z = d3.scale.category20c(), 
-	label = "country", 
-	value = "population";
+	var self = this;
+	
+	var r = 100,
+		ir = 0,
+		label = "country", 
+		value = "population";
  
  
 	var labels = this.models.map(function( data, i ){
@@ -203,25 +210,25 @@ var m = 0,
 	
 	var data = [values];
 	
-// Insert an svg:svg element (with margin) for each row in our dataset. A
-// child svg:g element translates the origin to the pie center.
-var svg = d3.select( this.el + " "+ this.options.container)
-    .data( data )
-  .append("svg:g")
-    .attr("transform", "translate(" + (r + m) + "," + (r + m) + ")");
- 
-// The data for each svg:svg element is a row of numbers (an array). We pass
-// that to d3.layout.pie to compute the angles for each arc. These start and end
-// angles are passed to d3.svg.arc to draw arcs! Note that the arc radius is
-// specified on the arc, not the layout.
-svg.selectAll("path")
-    .data(d3.layout.pie())
-  .enter().append("svg:path")
-    .attr("d", d3.svg.arc()
-    .innerRadius( ir )
-    .outerRadius(r))
-    .style("fill", function(d, i) { return z(i); });
- 
+	// Insert an svg:svg element (with margin) for each row in our dataset. A
+	// child svg:g element translates the origin to the pie center.
+	var svg = d3.select( this.el + " "+ this.options.container)
+		.data( data )
+		.append("svg:g")
+		.attr("transform", "translate(" + r + "," + r + ")");
+	
+	// The data for each svg:svg element is a row of numbers (an array). We pass
+	// that to d3.layout.pie to compute the angles for each arc. These start and end
+	// angles are passed to d3.svg.arc to draw arcs! Note that the arc radius is
+	// specified on the arc, not the layout.
+	svg.selectAll("path")
+		.data(d3.layout.pie())
+		.enter().append("svg:path")
+		.attr("d", d3.svg.arc()
+		.innerRadius( ir )
+		.outerRadius(r))
+		.style("fill", function(d, i) { return self.color( i ); });
+	
 };
 
 // rendering the visualization (generated once)
@@ -246,6 +253,21 @@ Cloudvisio.prototype._container = function(){
 		.attr("height", this.options.height);
 };
 	
+
+// define the color spectrum
+Cloudvisio.prototype.colors = function( colors ){
+	if (!arguments.length) return this.options.colors;
+	//  overwrite existing color palette 
+	this.options.colors = colors;
+	// preserve chainability
+	return this;
+};
+
+// get the next color in the selected spectrum
+Cloudvisio.prototype.color = function(i) { 
+	return (this.options.colors instanceof Function) ? this.options.colors(i) : this.options.colors[i]; // assume it's an array if not a function?
+};
+
 
 // Helpers
 // - load template

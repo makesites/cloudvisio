@@ -33,6 +33,7 @@ concat({
 		'lib/charts/stack.js',
 		'lib/charts/pie.js',
 		'lib/render.js',
+		'lib/color.js',
 		'lib/utils.js',
 		'lib/_end.js'
     ],
