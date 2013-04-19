@@ -42,6 +42,71 @@ Cloudvisio.prototype = {
 
 
 
+// this is where the axis will be stored
+Cloudvisio.prototype.models = [];
+
+// load a dataset
+Cloudvisio.prototype.data = function( raw ){
+	// return the existing data if none is passed...
+	if (!arguments.length) return this._data;
+	// do some calculations 
+	this._data = raw;
+	// allow method chaining
+	return this;
+};
+
+// load a dataset
+Cloudvisio.prototype.set = function( data ){
+	data = data || false;
+	if(!data) return;
+	// check if it's and array of objects
+	//if(data instanceof Array){
+	if(data.length != "undefined"){
+		for( var i in data ){
+			this.models.push( data[i] );
+		}
+	} else {
+		// assume one element
+		this.models.push( data );
+	}
+	// allow method chaining
+	return this;
+}; 
+
+// filter the data based on a regular expression
+Cloudvisio.prototype.search = function( query, field ){
+	var exp = new RegExp(query);
+	//...
+	// allow method chaining
+	return this;
+};
+
+// Internal 
+// - raw data container
+Cloudvisio.prototype._data = {};
+
+
+
+Cloudvisio.prototype.process = function( key, value ) {
+	console.log(key + " : "+value);
+};
+
+Cloudvisio.prototype.match = function( query, field ){
+	var exp = new RegExp(query);
+	//...
+	// allow method chaining
+	return this;
+};
+
+
+// convert the regular expression into a string
+Cloudvisio.prototype.verbalize = function(){
+	
+};
+
+// Helpers
+
+
 // adding a new (custom chart)
 Cloudvisio.prototype.chart = function( chart ){
 	if (!arguments.length) return this._chart;
@@ -55,9 +120,18 @@ Cloudvisio.prototype.chart = function( chart ){
 	return this;
 };
 
-
+// default layouts
+//var charts = ["stack", "pie"];
+//
 Cloudvisio.prototype.charts = {}; 
-// default chart
+
+// loop through charts 
+//for(var i in charts){
+//	Cloudvisio.prototype.charts[ charts[i] ] = charts[i];
+//}
+
+
+// stacked/bar chart
 Cloudvisio.prototype.charts.stack = function() {
 
 	var w = 960,
@@ -149,71 +223,6 @@ svg.selectAll("path")
     .style("fill", function(d, i) { return z(i); });
  
 };
-
-// this is where the axis will be stored
-Cloudvisio.prototype.models = [];
-
-// load a dataset
-Cloudvisio.prototype.data = function( raw ){
-	// return the existing data if none is passed...
-	if (!arguments.length) return this._data;
-	// do some calculations 
-	this._data = raw;
-	// allow method chaining
-	return this;
-};
-
-// load a dataset
-Cloudvisio.prototype.set = function( data ){
-	data = data || false;
-	if(!data) return;
-	// check if it's and array of objects
-	//if(data instanceof Array){
-	if(data.length != "undefined"){
-		for( var i in data ){
-			this.models.push( data[i] );
-		}
-	} else {
-		// assume one element
-		this.models.push( data );
-	}
-	// allow method chaining
-	return this;
-}; 
-
-// filter the data based on a regular expression
-Cloudvisio.prototype.search = function( query, field ){
-	var exp = new RegExp(query);
-	//...
-	// allow method chaining
-	return this;
-};
-
-// Internal 
-// - raw data container
-Cloudvisio.prototype._data = {};
-
-
-
-Cloudvisio.prototype.process = function( key, value ) {
-	console.log(key + " : "+value);
-};
-
-Cloudvisio.prototype.match = function( query, field ){
-	var exp = new RegExp(query);
-	//...
-	// allow method chaining
-	return this;
-};
-
-
-// convert the regular expression into a string
-Cloudvisio.prototype.verbalize = function(){
-	
-};
-
-// Helpers
-
 
 // rendering the visualization (generated once)
 Cloudvisio.prototype.render = function(){

@@ -26,10 +26,12 @@ concat({
 		'lib/_start.js',
 		'lib/options.js',
 		'lib/constructor.js',
-		'lib/chart.js',
 		'lib/data.js',
 		'lib/math.js',
 		'lib/language.js',
+		'lib/chart.js',
+		'lib/charts/stack.js',
+		'lib/charts/pie.js',
 		'lib/render.js',
 		'lib/utils.js',
 		'lib/_end.js'
