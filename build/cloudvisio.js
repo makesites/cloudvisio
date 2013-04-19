@@ -22,7 +22,7 @@ Cloudvisio = function( options ){
 	// save options for later...
 	this.options = options;
 	// add the appropriate chart
-	var layout = this["_"+ options.layout] || this._stack;
+	var layout = this.charts[ options.layout] || this.charts.stack;
 	this.chart( layout );
 	
 	
@@ -45,16 +45,20 @@ Cloudvisio.prototype = {
 // adding a new (custom chart)
 Cloudvisio.prototype.chart = function( chart ){
 	if (!arguments.length) return this._chart;
-	console.log( chart );
 	// evaluate the function first? 
 	this._chart = chart;
+	// save a referense of the chart if it doesn't exist 
+	if(typeof this.charts[this.options.layout] == "undefined"){ 
+		this.charts[this.options.layout] = chart;
+	}
 	// preserve chainability
 	return this;
 };
 
 
+Cloudvisio.prototype.charts = {}; 
 // default chart
-Cloudvisio.prototype._stack = function() {
+Cloudvisio.prototype.charts.stack = function() {
 
 	var w = 960,
 	h = 500, 
@@ -104,7 +108,7 @@ Cloudvisio.prototype._stack = function() {
 	
 };
 
-Cloudvisio.prototype._pie = function() {
+Cloudvisio.prototype.charts.pie = function() {
 
  
 var m = 0,
