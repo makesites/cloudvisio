@@ -22,8 +22,9 @@ Cloudvisio = function( options ){
 	// save options for later...
 	this.options = options;
 	// add the appropriate chart
-	this.add( this["_"+ options.layout] );
-	this.layout = this[ options.layout ] || d3.layout[ options.layout ] || false;
+	var layout = this["_"+ options.layout] || this._stack;
+	this.chart( layout );
+	
 	
 	// setup 
 	this._container();
@@ -42,9 +43,13 @@ Cloudvisio.prototype = {
 
 
 // adding a new (custom chart)
-Cloudvisio.prototype.add = function( chart ){
+Cloudvisio.prototype.chart = function( chart ){
+	if (!arguments.length) return this._chart;
+	console.log( chart );
 	// evaluate the function first? 
-	this.chart = chart;
+	this._chart = chart;
+	// preserve chainability
+	return this;
 };
 
 
@@ -209,7 +214,8 @@ Cloudvisio.prototype.verbalize = function(){
 // rendering the visualization (generated once)
 Cloudvisio.prototype.render = function(){
 	d3.select( this.el + " "+ this.options.container).data(this.models);
-	this.chart();
+	var chart = this.chart();
+	chart.call(this, arguments);
 	//.transition().duration(500).call( this.chart() );
 };
 
