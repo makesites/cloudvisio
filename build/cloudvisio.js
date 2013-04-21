@@ -27,6 +27,7 @@ Cloudvisio = function( options ){
 	options.width = options.width || defaults.width;
 	options.height = options.height || defaults.height;
 	options.colors = options.colors || defaults.colors;
+	options.chart = options.chart || defaults.chart;
 	// save options for later...
 	this.options = options;
 	// add the appropriate chart
@@ -227,31 +228,18 @@ Cloudvisio.prototype.charts = {};
 Cloudvisio.prototype.charts.stack = function() {
 
 	var self = this;
-	
-	var w = 960,
-	h = 500, 
-	label = "country", 
-	value = "population";
-	
-	var labels = this.models.map(function( data, i ){
-		return data[label];
-	});
-	
-	var values = this.models.map(function( data, i ){
-		return { x : i, y : data[value] };
-	});
-	
-	// in a stacked bar there's more than one passes from the models
-	var remapped = [values];
+	var width = 1000,
+    height = 1000;
+	var nodes = models();
 	
 	var svg = d3.select( this.el + " "+ this.options.container)
             .append("svg:g")
-            .attr("transform", "translate(30,470)");
+            .attr("transform", "translate(30,970)");
 			
-	x = d3.scale.ordinal().rangeRoundBands([0, w]);
-	y = d3.scale.linear().range([0, h]);
+	x = d3.scale.ordinal().rangeRoundBands([0, width]);
+	y = d3.scale.linear().range([0, height]);
 	
-	var data = d3.layout.stack()( remapped );
+	var data = d3.layout.stack()( nodes.values );
 	
 	x.domain(data[0].map(function(d) { return d.x; }));
 	y.domain([0, d3.max(data[data.length - 1], function(d) { return d.y0 + d.y; })]);
@@ -278,7 +266,7 @@ Cloudvisio.prototype.charts.stack = function() {
 	
 	// Add a label per date.
 	svg.selectAll("text")
-		.data( labels )
+		.data( nodes.labels )
 		.enter().append("svg:text")
 		.attr("x", function(d) { return x(d) + x.rangeBand() / 2; })
 		.attr("y", 6)
@@ -294,7 +282,7 @@ Cloudvisio.prototype.charts.stack = function() {
 		.attr("transform", function(d) { return "translate(0," + -y(d) + ")"; });
 		
 	rule.append("svg:line")
-		.attr("x2", w)
+		.attr("x2", width)
 		.style("stroke", function(d) { return d ? "#fff" : "#000"; })
 		.style("stroke-opacity", function(d) { return d ? 0.3 : null; });
 		
@@ -303,7 +291,26 @@ Cloudvisio.prototype.charts.stack = function() {
 		.attr("dy", ".35em")
 		.text(d3.format(",d"));
 		
-
+	
+	function models(){
+		var label = self.options.chart.label, 
+			value = self.options.chart.value;
+	
+		var labels = self.models.map(function( data, i ){
+			return data[label];
+		});
+		
+		var values = self.models.map(function( data, i ){
+			return { x : i, y : data[value] };
+		});
+		
+		// in a stacked bar there's more than one passes from the models
+		return {
+			labels : labels,
+			values : [values]
+		};
+	
+	}
 };
 
 var arc = d3.svg.arc();
@@ -311,27 +318,18 @@ var arc = d3.svg.arc();
 Cloudvisio.prototype.charts.pie = function() {
 
 	var self = this;
+	var width = 1000,
+    height = 1000;
 	
-	var r = 300, // width/2
-		ir = 0,
-		label = "country", 
-		value = "population";
+	var r = width/2,
+		ir = this.options.chart.ir || 0;
  
+	var nodes = models();
  
-	var labels = this.models.map(function( data, i ){
-		return data[label];
-	});
-	
-	var values = this.models.map(function( data, i ){
-		return data[value];
-	});
-	
-	var data = [values];
-	
 	// Insert an svg:svg element (with margin) for each row in our dataset. A
 	// child svg:g element translates the origin to the pie center.
 	var svg = d3.select( this.el + " "+ this.options.container)
-		.data( data )
+		.data( nodes.values )
 		.append("svg:g")
 		.attr("transform", "translate(" + r + "," + r + ")");
 	
@@ -370,9 +368,27 @@ Cloudvisio.prototype.charts.pie = function() {
 			return "translate(" + arc.centroid(d) + ")";        //this gives us a pair of coordinates like [50, 50]
 		})
 		.attr("text-anchor", "middle")                          //center the text on it's origin
-		.text(function(d, i) { return labels[i]; });        //get the label from our original data array
+		.text(function(d, i) { return nodes.labels[i]; });        //get the label from our original data array
 		.transition().ease("cubic").duration(2000).attrTween("transform", textTween);
 	*/
+	
+	function models(){ 
+		var label = self.options.chart.label, 
+			value = self.options.chart.value;
+	
+		var labels = self.models.map(function( data, i ){
+			return data[label];
+		});
+		
+		var values = self.models.map(function( data, i ){
+			return data[value];
+		});
+		
+		return {
+			labels: labels,
+			values:  [values]
+		};
+	}
 	
 };
 
