@@ -188,13 +188,15 @@ Cloudvisio.prototype.verbalize = function(){
 
 // adding a new (custom chart)
 Cloudvisio.prototype.chart = function( chart ){
-	if (!arguments.length) return this._chart;
-	// evaluate the function first? 
-	this._chart = chart;
-	// save a referense of the chart if it doesn't exist 
-	if(typeof this.charts[this.options.layout] == "undefined"){ 
-		this.charts[this.options.layout] = chart;
+	if (!arguments.length) return this.charts[this.options.layout] || null;
+	// otherwise save provided chart.. evaluate the function first? 
+	// create a new, non-conflicting container if it exists 
+	if(typeof this.charts[this.options.layout] != "undefined"){ 
+		this.options.layout = "untitled";
 	}
+	// either way save a referense of the chart
+	this.charts[this.options.layout] = chart;
+
 	// preserve chainability
 	return this;
 };
@@ -376,7 +378,8 @@ function tweenPie(b) {
 Cloudvisio.prototype.render = function(){
 	d3.select( this.el + " "+ this.options.container).data(this.models);
 	var chart = this.chart();
-	chart.call(this, arguments);
+	if( chart !== null)
+		chart.call(this, arguments);
 	//.transition().duration(500).call( this.chart() );
 };
 
