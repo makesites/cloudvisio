@@ -32,16 +32,15 @@ browserify -x ./node_modules/d3/index-browserify.js index/index-browserify.js > 
 For either client-side or server-side processing the API is the same. For instance: 
 ```
 var chart = new Cloudvisio({ layout: "stack" });
-chart.set( data );
-
+chart.parse( data );
 ```
-In the above example, where 'data' is a known javascript object with pre-caclulated data. If the data is a raw collection we can filter it first by creating the axis out of conditions we create: 
+In the above example, where 'data' is a known javascript object with pre-caclulated axis. If the data is a raw collection we can filter it first by creating the axis out of conditions we create: 
 ```
 var chart = new Cloudvisio({ layout: "stack" });
 chart.data( data ); *
-chart.search(/USA/gi, "address");
-chart.match(/^John/gi, "name");
-
+chart.axis("address");
+chart.axis("name");
+chart.group(["USA"], "address");
 ```
 After the data is processed we compile the new chart with the method ```render()``` which will output the required markup.
 
@@ -54,7 +53,8 @@ Look into the examples folder for more specific implementations of the (server-s
 
 ## Options
 
- * ```layout: "string"```, the type of chart we want to render. Review the layout section for the available options
+* ```layout: "string"```, the type of chart we want to render. Review the layout section for the available options
+* ```chart: { object }```, options related with the rendering of the chart - which differ for every layout. 
 ...
 
 ## Methods 
@@ -65,17 +65,17 @@ The api is trying to use the most obvious conventions every experienced web deve
 
 Pass a raw object to the library that will be used for further analysis. 
 
-### set( models )
+### parse( models )
 
 Add a normalized dataset ( with pre-calculated axis ) to the models. 
 
-### search()
+### set( object )
 
-Lookup the raw data for the search term (regular expression) you are looking for. Returns a boolean. 
+Update the visualization's options dynamically. Accepts an object of updated values. 
 
-### match()
+### group([array], axis)
 
-Find all the occurances of a condition in the raw data, expressed by a regular expression. Returns a number. 
+Use an axis as a basis to group the parsed models into groups, with their labels specified in the array.
 
 
 ## Layouts 
@@ -84,6 +84,7 @@ Cloudvisio supports some of D3 layouts out of the box.
 
 * Stack
 * Pie
+* Force
 ...
 
 In addition it can accept custom layouts using the ```chart()``` method. 
