@@ -12,6 +12,7 @@ var defaults = {
 	//colors: d3.scale.ordinal().range(["darkblue", "blue", "lightblue"]);
 	
 };
+
 // dependencies
 //var d3 = require("d3");
 
@@ -63,7 +64,7 @@ Cloudvisio.prototype.data = function( raw ){
 };
 
 // load a dataset
-Cloudvisio.prototype.set = function( data ){
+Cloudvisio.prototype.parse = function( data ){
 	data = data || false;
 	if(!data) return;
 	// check if it's and array of objects
@@ -383,6 +384,18 @@ Cloudvisio.prototype.render = function(){
 Cloudvisio.prototype.update = function(){
 	
 };
+
+
+// updating options dynamically
+Cloudvisio.prototype.set = function( obj ){
+	if( !(obj instanceof Object) ) return this;
+	for( var i in obj){
+		this.options[i] = obj[i];
+	}
+	// 
+	return this;
+};
+
 
 // Internal methods
 // creates the chart container
