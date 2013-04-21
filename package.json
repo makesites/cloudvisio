@@ -1,7 +1,7 @@
 {
   "name": "cloudvisio",
-  "version": "0.2.15",
-  "description": "[WIP] Visual Representation of cloud data",
+  "version": "0.3.0",
+  "description": "Visual Representation of cloud data",
   "author": "makesites",
   "contributors": [
     { "name": "Makis Tracend", "email": "makis@makesit.es" }
