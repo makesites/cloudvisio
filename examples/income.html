@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+
+<!-- Dependencies -->
+<script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js"></script>
+<!-- Cloudvisio lib -->
+<script type="text/javascript" src="../build/cloudvisio.js"></script>
+<!-- Example code -->
+<script type="text/javascript">
+// variables
+var vis;
+
+$(function(){
+	
+	// insert code here...
+	vis = new Cloudvisio();
+	// source: http://api.worldbank.org/countries?format=json&per_page=300&json
+	d3.json("data/income.json", function( data ){
+		//
+		vis.data( data[1] );
+		console.log("available keys: ", vis.keys() );
+		vis.set({ layout: "force" });
+		// create a new axis
+		vis.axis("name");
+		vis.axis("incomeLevel");
+		vis.group(["high", "Medium", "Low"], "incomeLevel");
+		
+		vis.render();
+	});
+	
+});
+
+</script>
+
+<!-- Example styling -->
+<style type="text/css">
+body, html {
+	margin: 0;
+	padding: 0;
+}
+
+header {
+	position: absolute;
+	padding: 12px;
+}
+
+#vis {
+	width: 100%;
+	height: 100%;
+}
+
+</style>
+
+</head>
+<body>
+
+<header>
+    <h2>Per capita income</h2>
+    <h3>countries split in high/medium/low groups</h3>
+    <p>Data from <a href="http://data.worldbank.org/developers">worldbank.org</a></p>
+</header>
+
+<div id="vis"><!-- --></div>
+
+</body>
+</html>
