@@ -118,7 +118,7 @@ Cloudvisio.prototype.keys = function( data ){
 // set an axis key (or return the whole array
 Cloudvisio.prototype.axis = function( key ){
 	// return the existing data if none is passed...
-	if (!arguments.length) return Object.keys( this.models[0] );
+	if (!arguments.length) return Object.keys( this.models[0] || {} );
 	// focus on a specific subset?
 	var data = this.data();
 	// lookup the key in the raw data
@@ -142,7 +142,6 @@ Cloudvisio.prototype.axis = function( key ){
 	// maintain chanability
 	return this;
 };
-
 
 // group models based on axis results
 Cloudvisio.prototype.group = function( groups, axis){ 
@@ -171,6 +170,17 @@ Cloudvisio.prototype.group = function( groups, axis){
 	this.options.chart["group_"+axis] = groups;
 	//'match(/(high)/gi, ).;
 }; 
+
+// removing axis 
+Cloudvisio.prototype.remove = function( axis ){
+    for( var i in this.models ){
+        var model = this.models[i];
+        if( typeof model[axis] != "undefined"){
+            delete this.models[i][axis];
+        }
+    }
+};
+
 
 // Internal 
 // - raw data container
@@ -501,9 +511,17 @@ Cloudvisio.prototype.charts.force = function() {
 
 
 // rendering the visualization (generated once)
-Cloudvisio.prototype.render = function(){
+Cloudvisio.prototype.render = function( append ){
 	
 	var chart = this.chart();
+    append = append || false;
+    
+    // clear container (by default)
+    if( !append ) {
+        d3.select( this.el ).html("");
+        this._container();
+    }
+    
 	if( chart !== null)
 		chart.call(this, arguments);
 	//.transition().duration(500).call( this.chart() );
