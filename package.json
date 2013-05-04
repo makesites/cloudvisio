@@ -18,7 +18,7 @@
   "licenses": [
     {
       "type": "Apache License, Version 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+      "url": "http://makesites.org/licenses/APACHE-2.0"
     }
   ], 
   "engines": { "node": "0.8.x" }, 

@@ -80,7 +80,7 @@ Use an axis as a basis to group the parsed models into groups, with their labels
 
 ## Layouts 
 
-Cloudvisio supports some of D3 layouts out of the box. 
+Cloudvisio supports some of [D3 layouts](https://github.com/mbostock/d3/wiki/Layouts) out of the box. 
 
 * Stack
 * Pie
@@ -96,4 +96,4 @@ Created by [Makis Tracend](http://tracend.me)
 
 Distributed through [Makesites.org](http://makesites.org/)
 
-Released under the [MIT license](http://makesites.org/licenses/MIT)
+Released under the [Apache License v2.0](http://makesites.org/licenses/APACHE-2.0)
