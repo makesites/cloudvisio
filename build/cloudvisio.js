@@ -60,6 +60,8 @@ Cloudvisio.prototype.data = function( raw ){
 	if (!arguments.length) return this._data;
 	// do some calculations 
 	this._data = raw;
+    // reset the models
+    this.models = [];
 	// allow method chaining
 	return this;
 };
@@ -127,7 +129,7 @@ Cloudvisio.prototype.axis = function( key ){
 		if(typeof this.models[i] == "undefined" ) this.models[i] = {};
 			
 		// there's currenty a 1-1 match between the data length and the models length...
-		if( typeof data[i][key] == "string" ){
+		if( typeof data[i][key] == "string" || typeof data[i][key] == "number"){
 			this.models[i][key] = data[i][key];
 		} else if( typeof data[i][key] == "object" ){
 			// by priority look up a desciptive key in the object
