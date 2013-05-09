@@ -171,6 +171,7 @@ Cloudvisio.prototype.group = function( groups, axis){
 	// save groups for later
 	this.options.chart["group_"+axis] = groups;
 	//'match(/(high)/gi, ).;
+    return this;
 }; 
 
 // removing axis 
@@ -181,9 +182,16 @@ Cloudvisio.prototype.remove = function( axis ){
             delete this.models[i][axis];
         }
     }
+    return this;
 };
 
+// public access of findType
+Cloudvisio.prototype.type = function( key ){
+    // add more conditions / filters?
+    return this._findType( key );
+};
 
+    
 // Internal 
 // - raw data container
 Cloudvisio.prototype._data = {};
