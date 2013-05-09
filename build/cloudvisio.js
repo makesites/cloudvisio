@@ -423,15 +423,12 @@ pie.prototype = {
                     .data( data ) //associate our data with the document
                     .append("svg:g")
                     .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
-            
+        
         // add pie group
         var pie = d3.layout.pie() //this will create arc data for us given a list of values
                     .value(function(d) { return d.value; }) // Binding each value to the pie
                     .sort( function(d) { return null; } );
-            
-            
-            
-        console.log( pie );
+        
         // Select all <g> elements with class slice (there aren't any yet)
         var arcs = svg.selectAll("g.slice")
           // Associate the generated pie data (an array of arcs, each having startAngle,
@@ -444,12 +441,12 @@ pie.prototype = {
           // element associated with each slice)
           .append("svg:g")
           .attr("class", "slice");    //allow us to style things in the slices (like text)
-
+        
         // The data for each svg:svg element is a row of numbers (an array). We pass
         // that to d3.layout.pie to compute the angles for each arc. These start and end
         // angles are passed to d3.svg.arc to draw arcs! Note that the arc radius is
         // specified on the arc, not the layout.
-         
+        
         var slices = arcs.append("svg:path")
             .attr("alt", function(d) { return d.data.label; }) 
             .attr("d", arc
