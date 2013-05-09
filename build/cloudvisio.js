@@ -19,19 +19,26 @@ var defaults = {
 Cloudvisio = function( options ){
 	// variables
 	options = options || {};
-	
-	// merge with defaults
+	this.options = {};
+        
+	// get the el
 	this.el = options.el || defaults.el;
+    // clean up options
 	options.layout = ( options.layout || defaults.layout ).toLowerCase();
+    // extend with the defaults
+    options = utils.extend( defaults, options );
+    /*
 	options.container = options.container || defaults.container;
 	options.width = options.width || defaults.width;
 	options.height = options.height || defaults.height;
 	options.colors = options.colors || defaults.colors;
 	options.chart = options.chart || defaults.chart;
+    */
 	// add the appropriate chart
-	this.chart( options.layout );
+	//this.chart( options.layout );
 	// ovewrite the default values (with the passed ones)
-	this.options = utils.extend( this.options, options );
+	//this.options = utils.extend( this.options, options );
+    this.set( options );
     
 	// setup 
 	this._container();
@@ -45,7 +52,7 @@ Cloudvisio.prototype = {
 		return "Cloudvisio running on D3";
 	}, 
 
-    options: {}
+    options: {} // why isn't this available in the constructor?
     
 };
 
@@ -271,7 +278,7 @@ var stack = function( self ) {
 
         this.self = self;
         // setup options
-        utils.extend(self.options, this.defaults);
+        self.set( this.defaults );
     
     };
     
@@ -393,7 +400,7 @@ var pie = function( self ) {
 
         this.self = self;
         // setup options
-        utils.extend(self.options, this.defaults);
+        self.set( this.defaults );
     
     };
     
@@ -520,7 +527,7 @@ var force = function( self ) {
 
         this.self = self;
         // setup options
-        utils.extend(self.options, this.defaults);
+        self.set( this.defaults );
     
     };
     
@@ -731,12 +738,26 @@ Cloudvisio.prototype.ready = function( layout ){
 // updating options dynamically
 Cloudvisio.prototype.set = function( obj ){
 	if( !(obj instanceof Object) ) return this;
+    // "clean" obj first 
+    for( var i in obj){
+        if( i == "chart" ){
+            var options = this.options.chart || {};
+            var chart = obj[i];
+            // reset options now
+            this.options.chart = {};
+            // don't overwrite existing assignements
+            for( var j in chart ){
+                if( options[j] && typeof options[j] != "undefined" && !chart[j] ){
+                    obj[i][j] = options[j];
+                }
+            }
+        }
+	}
+    // merge the final object
     utils.extend(this.options, obj);
     // special condition for layouts
     if( obj.layout ) this.chart( obj.layout );
-	//for( var i in obj){
-	//	this.options[i] = obj[i];
-	//}
+	
 	// 
 	return this;
 };
