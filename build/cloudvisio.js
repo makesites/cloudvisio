@@ -200,9 +200,14 @@ Cloudvisio.prototype.remove = function( axis ){
 };
 
 // public access of findType
-Cloudvisio.prototype.type = function( key ){
-    // add more conditions / filters?
-    return this._findType( key );
+Cloudvisio.prototype.type = function( key, options ){
+    // lookup the key in the models first
+    if( this.models && this.models[0][key] ){
+        // everything is fine... 
+        return this._findType( key );
+    } else {
+        return this._findType( key, this._data );
+    }
 };
 
     
@@ -814,11 +819,12 @@ Cloudvisio.prototype._findAxis = function( type ){
 };
 
 // get the type of the selected field
-Cloudvisio.prototype._findType = function( key ){
+Cloudvisio.prototype._findType = function( key, data ){
     var type = false;
+    data = data || this.models;
     // loop through models
-    for(var i in this.models){
-        var itype = (typeof this.models[i][key] );
+    for(var i in data){
+        var itype = (typeof data[i][key] );
         // if we've found more than one types exit
         if( type && type != itype ) return "mixed";
         type = itype;
