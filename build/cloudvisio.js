@@ -62,13 +62,20 @@ Cloudvisio.prototype = {
 Cloudvisio.prototype.models = [];
 
 // load a dataset
-Cloudvisio.prototype.data = function( raw ){
+Cloudvisio.prototype.data = function( raw, options ){
+    // fallbacks
+    options = options || {};
 	// return the existing data if none is passed...
 	if (!arguments.length) return this._data;
 	// do some calculations 
 	this._data = raw;
     // reset the models
-    this.models = [];
+    if( options.silent ){
+        // don't erase models
+    } else {
+        // reset the models
+        this.models = [];
+    }
 	// allow method chaining
 	return this;
 };
