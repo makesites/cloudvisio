@@ -159,31 +159,50 @@ Cloudvisio.prototype.axis = function( key ){
 	return this;
 };
 
-// group models based on axis results
-Cloudvisio.prototype.group = function( groups, axis){ 
+// create an axis by grouping the raw data
+Cloudvisio.prototype.group = function( groups, key){ 
+    var data = this.data();
 	// convert groups to lower case
-	groups = groups.join("`").toLowerCase().split("`");
+    groups = groups.join("`").toLowerCase().split("`");
 	// lookup the right axis
-	for( var i in this.models ){
-		var model = this.models[i];
-		if( typeof model[axis] != "undefined"){
-			var matches = this.find(groups, model[axis]);
-			// process results
-			//if(matches !== null);
-			if(matches instanceof Array){
-				// are we expecting more than one matches??
-				var group = matches.pop().toLowerCase();
-				model["group_"+axis] = groups.indexOf( group);
-			} else {
-				model["group_"+axis] = -1;
-			}
+	for( var i in data ){
+		// create the model it this is the first axis
+        this.models[i] = this.models[i] || {};
+		if( typeof data[i][key] != "undefined"){
+            // convert value to string
+            var value = ""+data[i][key]+"";
+            // 
+            var matches = this.find(groups, value);
+            // process results
+            //if(matches !== null);
+            if(matches instanceof Array){
+                // are we expecting more than one matches??
+                var group = matches.pop().toLowerCase();
+                this.models[i]["group_"+key] = groups.indexOf( group );
+            } else {
+                this.models[i]["group_"+key] = -1;
+            }
+            /*
+            // support types other than string
+            switch(typeof value){
+                case "string":
+                    
+                break;
+                case "boolean":
+                    console.log(groups);
+                    // in this case we do a direct comparison (sting comparisson
+                    this.models[i]["group_"+key] = groups.indexOf( value.toString() );
+                    console.log();
+                break;
+            }
+			*/
 		} else {
 			//model["group_"+axis] = null;
-			model["group_"+axis] = -1;
+			this.models[i]["group_"+key] = -1;
 		}
 	}
 	// save groups for later
-	this.options.chart["group_"+axis] = groups;
+	//this.options.chart["group_"+key] = groups;
 	//'match(/(high)/gi, ).;
     return this;
 }; 
