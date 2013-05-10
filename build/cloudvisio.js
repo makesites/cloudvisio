@@ -106,7 +106,7 @@ Cloudvisio.prototype.search = function( query, field ){
 	return this;
 };
 
-// return the matchs of a regular expression
+// return the matches of a regular expression
 Cloudvisio.prototype.find = function( query, string ){
 	if( query instanceof Array) query = query.join("|");
 	var regexp = new RegExp(query, "gi");
@@ -568,16 +568,19 @@ force.prototype = {
     
     schema: {
         label: "string",
-        value: "number"
+        value: "number",
+        radius: "number"
     },
     
     defaults: {
-        charge: -20,
+        charge: -50,
         distance: 30,
         ir : 0,
+        radius: 5,
         chart: {
             label: false,
-            value: false
+            value: false,
+            radius: false
         }
     }, 
     
@@ -609,12 +612,11 @@ force.prototype = {
         
         var groupFill = function(d, i) { return self.color(i & 3); };
         */
-        
         var node = svg.selectAll(".node")
             .data( data ).enter()
             .append("circle")
             .attr("class", "node")
-            .attr("r", 5)
+            .attr("r", function(d) { return d.radius; })
             .style("fill", function(d) { return self.color( d.group ); })
             .call(force.drag);
         
@@ -661,7 +663,9 @@ force.prototype = {
 		// required data: 
 		// - name (string)
 		var name = self.options.chart.label,
-            group = self.options.chart.value;
+            group = self.options.chart.value,
+            radius = self.options.chart.radius;
+        // old code:
 		// - group (integer)
         /*
 		if( keys.indexOf("id") > -1 ) name = "id";
@@ -677,7 +681,9 @@ force.prototype = {
 		for( var j in d ){
 			result.push({
 				name : d[j][name], 
-				group : d[j][group]
+				group : d[j][group],
+                // if radius is a number, use it as a static value
+                radius: ( isNaN(radius) )? d[j][radius] : radius
 			});
 		}
 		//
