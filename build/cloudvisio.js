@@ -169,8 +169,9 @@ Cloudvisio.prototype.group = function( groups, key){
 		// create the model it this is the first axis
         this.models[i] = this.models[i] || {};
 		if( typeof data[i][key] != "undefined"){
-            // convert value to string
-            var value = ""+data[i][key]+"";
+            // convert any value to string
+            var value = (data[i][key] instanceof Object) ? utils.toArray( data[i][key] ).join("|") : ""+data[i][key]+"";
+            
             // 
             var matches = this.find(groups, value);
             // process results
@@ -243,6 +244,30 @@ Cloudvisio.prototype.process = function( key, value ) {
 Cloudvisio.prototype.match = function( query, field ){
 	var exp = new RegExp(query);
 	//...
+	// allow method chaining
+	return this;
+};
+
+
+Cloudvisio.prototype.eq = function( number, field ){
+	// 
+    
+	// allow method chaining
+	return this;
+};
+
+
+Cloudvisio.prototype.gt = function( number, field ){
+	
+    
+	// allow method chaining
+	return this;
+};
+
+
+Cloudvisio.prototype.lt = function( number, field ){
+	
+    
 	// allow method chaining
 	return this;
 };
