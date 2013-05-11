@@ -1,6 +1,14 @@
 # Cloudvisio 
 
-Representing data in interesting ways. You may see it as a javascript template engine for graphs. It operates one level above D3, allowing you to create useful results (models) based on existing raw data. 
+A javascript library that parses raw data (from a database or api) and generates meaningful visualizations. 
+
+In essence, the scope of Cloudvisio is to allow for the easy generation of "axis" based on the raw data. 
+
+For the technical person Cloudvisio may resemble a javascript template engine for graphs. 
+
+For the artistic mind Cloudvisio may open up the possibility to play with the data in creative ways. 
+
+Powered by D3. 
 
 
 ## Features
@@ -8,6 +16,16 @@ Representing data in interesting ways. You may see it as a javascript template e
 * D3 integration 
 * Structure agnostic approach
 * Live filtering of data
+
+## Examples
+
+This is the kind of charts you can create right now:
+
+* [Activity monitors of remote APIs](http://rawgithub.com/makesites/cloudvisio/master/examples/gists.html)
+* [Relative pie charts](http://rawgithub.com/makesites/cloudvisio/master/examples/population.html)
+* [Groups based on keywords](http://rawgithub.com/makesites/cloudvisio/master/examples/income.html)
+
+As the library is enhanced with more methods, we expect "smarter" use cases to emerge. 
 
 
 ## Install 
@@ -22,11 +40,6 @@ For server-side processing you can use npm (still work in progress):
 npm install cloudvisio
 ```
 
-If you'd like to build the client lib from the you can use [browserify](http://browserify.org/)
-```
-browserify -x ./node_modules/d3/index-browserify.js index/index-browserify.js > build/cloudvisio.bundle.js
-```
-
 ## Usage
 
 For either client-side or server-side processing the API is the same. For instance: 
@@ -37,8 +50,7 @@ chart.parse( data );
 In the above example, where 'data' is a known javascript object with pre-caclulated axis. If the data is a raw collection we can filter it first by creating the axis out of conditions we create: 
 ```
 var chart = new Cloudvisio({ layout: "stack" });
-chart.data( data ); *
-chart.axis("address");
+chart.data( data );
 chart.axis("name");
 chart.group(["USA"], "address");
 ```
@@ -87,7 +99,7 @@ Cloudvisio supports some of [D3 layouts](https://github.com/mbostock/d3/wiki/Lay
 * Force
 ...
 
-In addition it can accept custom layouts using the ```chart()``` method. 
+In addition, Cloudvisio can accept custom layouts using the ```chart()``` method. 
 
 
 ## Credits
