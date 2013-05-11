@@ -58,6 +58,22 @@ header {
 <header>
 	<h2>Country population</h2>
 	<p>In this example we are using <a href="data/population.json">normalized data</a>.</p>
+    <pre>
+    vis = new Cloudvisio({
+		layout: "pie",
+		chart: {
+			label : "country", 
+			value : "population"
+		}
+	});
+
+    d3.json("data/population.json", function( data ){
+		
+        vis.parse( data );
+		vis.render();
+    
+	});
+    </pre>
 </header>
 
 <div id="vis"><!-- --></div>
