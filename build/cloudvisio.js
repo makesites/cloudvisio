@@ -1,10 +1,8 @@
-/**
- * @name cloudvisio
- * @author makesites
- * Homepage: http://makesites.org/cloudvisio
- * Version: 0.5.0 (Thu, 30 May 2013 04:35:40 GMT)
- * @license Apache License, Version 2.0
- */
+// @name cloudvisio - 0.5.0 (Thu, 30 May 2013 05:07:26 GMT)
+// @url https://github.com/makesites/cloudvisio
+
+// @author makesites
+// @license Apache License, Version 2.0
 
 if( !window.Cloudvisio ) (function( d3 ){
 var defaults = {

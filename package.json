@@ -6,7 +6,7 @@
   "contributors": [
     { "name": "Makis Tracend", "email": "makis@makesit.es" }
   ],
-  "homepage": "http://makesites.org/cloudvisio", 
+  "homepage": "https://github.com/makesites/cloudvisio", 
   "keywords": ["cloudvisio", "cloud", "visio", "visualize", "vector", "svg", "d3", "webgl", "visualization","graph", "json"],
   "repository": {
     "type": "git",
