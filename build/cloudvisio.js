@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Thu, 30 May 2013 05:07:26 GMT)
+// @name cloudvisio - 0.5.0 (Thu, 30 May 2013 06:11:07 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -26,40 +26,40 @@ Cloudvisio = function( options ){
 	// variables
 	options = options || {};
 	this.options = {};
-        
+
 	// get the el
 	this.el = options.el || defaults.el;
-    // clean up options
+	// clean up options
 	options.layout = ( options.layout || defaults.layout ).toLowerCase();
-    // extend with the defaults
-    options = utils.extend( defaults, options );
-    /*
+	// extend with the defaults
+	options = utils.extend( defaults, options );
+	/*
 	options.container = options.container || defaults.container;
 	options.width = options.width || defaults.width;
 	options.height = options.height || defaults.height;
 	options.colors = options.colors || defaults.colors;
 	options.chart = options.chart || defaults.chart;
-    */
+	*/
 	// add the appropriate chart
 	//this.chart( options.layout );
 	// ovewrite the default values (with the passed ones)
 	//this.options = utils.extend( this.options, options );
-    this.set( options );
-    
-	// setup 
+	this.set( options );
+
+	// setup
 	this._container();
 };
 
 Cloudvisio.prototype = {
-	
-	constructor: Cloudvisio, 
-	
+
+	constructor: Cloudvisio,
+
 	description : function() {
 		return "Cloudvisio running on D3";
-	}, 
+	},
 
-    options: {} // why isn't this available in the constructor?
-    
+	options: {} // why isn't this available in the constructor?
+
 };
 
 
@@ -69,19 +69,19 @@ Cloudvisio.prototype.models = [];
 
 // load a dataset
 Cloudvisio.prototype.data = function( raw, options ){
-    // fallbacks
-    options = options || {};
+	// fallbacks
+	options = options || {};
 	// return the existing data if none is passed...
 	if (!arguments.length) return this._data;
-	// do some calculations 
+	// do some calculations
 	this._data = raw;
-    // reset the models
-    if( options.silent ){
-        // don't erase models
-    } else {
-        // reset the models
-        this.models = [];
-    }
+	// reset the models
+	if( options.silent ){
+		// don't erase models
+	} else {
+		// reset the models
+		this.models = [];
+	}
 	// allow method chaining
 	return this;
 };
@@ -102,7 +102,7 @@ Cloudvisio.prototype.parse = function( data ){
 	}
 	// allow method chaining
 	return this;
-}; 
+};
 
 // filter the data based on a regular expression
 Cloudvisio.prototype.search = function( query, field ){
@@ -128,7 +128,7 @@ Cloudvisio.prototype.keys = function( data ){
 	for(var i in data){
 		var attr = Object.keys(  data[i] );
 		for( var j in attr ){
-			// don't add the same key 
+			// don't add the same key
 			if( keys.indexOf( attr[j] ) > -1 ) continue;
 			keys.push( attr[j] );
 		}
@@ -147,7 +147,7 @@ Cloudvisio.prototype.axis = function( key ){
 	for(var i in data){
 		// create model if necessary
 		if(typeof this.models[i] == "undefined" ) this.models[i] = {};
-			
+
 		// there's currenty a 1-1 match between the data length and the models length...
 		if( typeof data[i][key] == "string" || typeof data[i][key] == "number"){
 			this.models[i][key] = data[i][key];
@@ -159,49 +159,49 @@ Cloudvisio.prototype.axis = function( key ){
 			this.models[i][key] = null;
 		}
 		//
-		
+
 	}
 	// maintain chanability
 	return this;
 };
 
 // create an axis by grouping the raw data
-Cloudvisio.prototype.group = function( groups, key){ 
-    var data = this.data();
+Cloudvisio.prototype.group = function( groups, key){
+	var data = this.data();
 	// convert groups to lower case
-    groups = groups.join("`").toLowerCase().split("`");
+	groups = groups.join("`").toLowerCase().split("`");
 	// lookup the right axis
 	for( var i in data ){
 		// create the model it this is the first axis
-        this.models[i] = this.models[i] || {};
+		this.models[i] = this.models[i] || {};
 		if( typeof data[i][key] != "undefined"){
-            // convert any value to string
-            var value = (data[i][key] instanceof Object) ? utils.toArray( data[i][key] ).join("|") : ""+data[i][key]+"";
-            
-            // 
-            var matches = this.find(groups, value);
-            // process results
-            //if(matches !== null);
-            if(matches instanceof Array){
-                // are we expecting more than one matches??
-                var group = matches.pop().toLowerCase();
-                this.models[i]["group_"+key] = groups.indexOf( group );
-            } else {
-                this.models[i]["group_"+key] = -1;
-            }
-            /*
-            // support types other than string
-            switch(typeof value){
-                case "string":
-                    
-                break;
-                case "boolean":
-                    console.log(groups);
-                    // in this case we do a direct comparison (sting comparisson
-                    this.models[i]["group_"+key] = groups.indexOf( value.toString() );
-                    console.log();
-                break;
-            }
+			// convert any value to string
+			var value = (data[i][key] instanceof Object) ? utils.toArray( data[i][key] ).join("|") : ""+data[i][key]+"";
+
+			//
+			var matches = this.find(groups, value);
+			// process results
+			//if(matches !== null);
+			if(matches instanceof Array){
+				// are we expecting more than one matches??
+				var group = matches.pop().toLowerCase();
+				this.models[i]["group_"+key] = groups.indexOf( group );
+			} else {
+				this.models[i]["group_"+key] = -1;
+			}
+			/*
+			// support types other than string
+			switch(typeof value){
+				case "string":
+
+				break;
+				case "boolean":
+					console.log(groups);
+					// in this case we do a direct comparison (sting comparisson
+					this.models[i]["group_"+key] = groups.indexOf( value.toString() );
+					console.log();
+				break;
+			}
 			*/
 		} else {
 			//model["group_"+axis] = null;
@@ -211,33 +211,33 @@ Cloudvisio.prototype.group = function( groups, key){
 	// save groups for later
 	//this.options.chart["group_"+key] = groups;
 	//'match(/(high)/gi, ).;
-    return this;
-}; 
+	return this;
+};
 
-// removing axis 
+// removing axis
 Cloudvisio.prototype.remove = function( axis ){
-    for( var i in this.models ){
-        var model = this.models[i];
-        if( typeof model[axis] != "undefined"){
-            delete this.models[i][axis];
-        }
-    }
-    return this;
+	for( var i in this.models ){
+		var model = this.models[i];
+		if( typeof model[axis] != "undefined"){
+			delete this.models[i][axis];
+		}
+	}
+	return this;
 };
 
 // public access of findType
 Cloudvisio.prototype.type = function( key, options ){
-    // lookup the key in the models first
-    if( this.models.length && this.models[0][key] ){
-        // everything is fine... 
-        return this._findType( key );
-    } else {
-        return this._findType( key, this._data );
-    }
+	// lookup the key in the models first
+	if( this.models.length && this.models[0][key] ){
+		// everything is fine...
+		return this._findType( key );
+	} else {
+		return this._findType( key, this._data );
+	}
 };
 
-    
-// Internal 
+
+// Internal
 // - raw data container
 Cloudvisio.prototype._data = {};
 
@@ -256,24 +256,24 @@ Cloudvisio.prototype.match = function( query, field ){
 
 
 Cloudvisio.prototype.eq = function( number, field ){
-	// 
-    
+	//
+
 	// allow method chaining
 	return this;
 };
 
 
 Cloudvisio.prototype.gt = function( number, field ){
-	
-    
+
+
 	// allow method chaining
 	return this;
 };
 
 
 Cloudvisio.prototype.lt = function( number, field ){
-	
-    
+
+
 	// allow method chaining
 	return this;
 };
@@ -290,293 +290,293 @@ Cloudvisio.prototype.verbalize = function(){
 // retrieving chart (or adding a new custom chart)
 Cloudvisio.prototype.chart = function( chart ){
 	if (!arguments.length) return this._chart;
-	// otherwise save provided chart.. evaluate the function first? 
-	// create a new, non-conflicting container if it exists 
-	//if(typeof this.charts[this.options.layout] != "undefined"){ 
+	// otherwise save provided chart.. evaluate the function first?
+	// create a new, non-conflicting container if it exists
+	//if(typeof this.charts[this.options.layout] != "undefined"){
 	//	this.options.layout = "untitled";
 	//}
-    var Chart; // class name
-    // find the right chart
-    if(typeof chart == "string"){
-        // find chart from the charts collection
-        Chart = this.charts[ chart ] || null;
-        // exit now if we didn't find it...
-        if( Chart === null ) return this;
-    } else if(typeof chart == "function"){
-        Chart = chart;
-        var layout = chart.prototype.layout || "untitled";
-        // it it's a new layout...
-        if(typeof this.charts[ layout ] == "undefined"){ 
-            this.charts[this.options.layout] = chart;
-            // set the new layout automatically?
-            this.options.layout = layout;
-        }
-    }
-    // 
-    // either way create a new instance of the chart
-    this._chart = new Chart( this );
-    //this.charts[this.options.layout]
-    // preserve chainability
-    return this;
+	var Chart; // class name
+	// find the right chart
+	if(typeof chart == "string"){
+		// find chart from the charts collection
+		Chart = this.charts[ chart ] || null;
+		// exit now if we didn't find it...
+		if( Chart === null ) return this;
+	} else if(typeof chart == "function"){
+		Chart = chart;
+		var layout = chart.prototype.layout || "untitled";
+		// it it's a new layout...
+		if(typeof this.charts[ layout ] == "undefined"){
+			this.charts[this.options.layout] = chart;
+			// set the new layout automatically?
+			this.options.layout = layout;
+		}
+	}
+	//
+	// either way create a new instance of the chart
+	this._chart = new Chart( this );
+	//this.charts[this.options.layout]
+	// preserve chainability
+	return this;
 };
 
 // default layouts
 //var charts = ["stack", "pie"];
 //
-Cloudvisio.prototype.charts = {}; 
+Cloudvisio.prototype.charts = {};
 
-// loop through charts 
+// loop through charts
 //for(var i in charts){
 //	Cloudvisio.prototype.charts[ charts[i] ] = charts[i];
 //}
 
 
-// Internal 
+// Internal
 // - instantiated chart
 Cloudvisio.prototype._chart = null;
 
 // stacked/bar chart
 var stack = function( self ) {
 
-        this.self = self;
-        // setup options
-        self.set( this.defaults );
-    
-    };
-    
+		this.self = self;
+		// setup options
+		self.set( this.defaults );
+
+	};
+
 stack.prototype = {
-    
-    layout: "stack",
-    
-    schema: {
-        label: "string",
-        value: "number"
-    },
-    
-    defaults: {
-        chart: {
-            label: false,
-            value: false
-        }
-    }, 
-    
-    constructor: stack, 
-    
-    render: function( append ){ 
-            
-        var self = this.self;
-        var width = 1024,
-        height = 768;
-            
-        var nodes = this.data();
-        
-        var svg = d3.select( self.el + " "+ self.options.container)
-                .append("svg:g")
-                .attr("transform", "translate(30,738)");
-                
-        x = d3.scale.ordinal().rangeRoundBands([0, width]);
-        y = d3.scale.linear().range([0, height]);
-        
-        var data = d3.layout.stack()( nodes.values );
-        
-        x.domain(data[0].map(function(d) { return d.x; }));
-        y.domain([0, d3.max(data[data.length - 1], function(d) { return d.y0 + d.y; })]);
-        
-        // Add a group for each column.
-        var valgroup = svg.selectAll("g.valgroup")
-            .data( data )
-            .enter().append("svg:g")
-            .attr("class", "valgroup")
-            .style("fill", function(d, i) { return self.color(i); })
-            .style("stroke", function(d, i) { return d3.rgb( self.color(i)).darker(); });
-        
-        // Add a rect for each date.
-        var rect = valgroup.selectAll("rect")
-            .data(function(d){return d;})
-            .enter().append("svg:rect")
-            .attr("x", function(d) { return x(d.x); })
-            .attr("y", function(d) { return -y(d.y0) - y(d.y); })
-            .attr("height", function(d) { return y(d.y); })
-            .attr("width", x.rangeBand());
-        
-        //parse = d3.time.format("%m/%Y").parse,
-        //format = d3.time.format("%b");
-        
-        // Add a label per date.
-        svg.selectAll("text")
-            .data( nodes.labels )
-            .enter().append("svg:text")
-            .attr("x", function(d) { return x(d) + x.rangeBand() / 2; })
-            .attr("y", 6)
-            .attr("text-anchor", "middle")
-            .attr("dy", ".71em")
-            .text(function(d) { return d; });
-        
-        // Add y-axis rules.
-        var rule = svg.selectAll("g.rule")
-            .data(y.ticks(5))
-            .enter().append("svg:g")
-            .attr("class", "rule")
-            .attr("transform", function(d) { return "translate(0," + -y(d) + ")"; });
-            
-        rule.append("svg:line")
-            .attr("x2", width)
-            .style("stroke", function(d) { return d ? "#fff" : "#000"; })
-            .style("stroke-opacity", function(d) { return d ? 0.3 : null; });
-            
-        rule.append("svg:text")
-            .attr("x", -20)
-            .attr("dy", ".35em")
-            .text(d3.format(",d"));
-            
-    },
-    
-    data: function(){
-        var self = this.self;
-        
-        var label = self.options.chart.label, 
-            value = self.options.chart.value;
-    
-        var labels = self.models.map(function( data, i ){
-            return data[label];
-        });
-        
-        var values = self.models.map(function( data, i ){
-            return { x : i, y : data[value] };
-        });
-        
-        // in a stacked bar there's more than one passes from the models
-        return {
-            labels : labels,
-            values : [values]
-        };
-    
-    }
+
+	layout: "stack",
+
+	schema: {
+		label: "string",
+		value: "number"
+	},
+
+	defaults: {
+		chart: {
+			label: false,
+			value: false
+		}
+	},
+
+	constructor: stack,
+
+	render: function( append ){
+
+		var self = this.self;
+		var width = 1024,
+		height = 768;
+
+		var nodes = this.data();
+
+		var svg = d3.select( self.el + " "+ self.options.container)
+				.append("svg:g")
+				.attr("transform", "translate(30,738)");
+
+		x = d3.scale.ordinal().rangeRoundBands([0, width]);
+		y = d3.scale.linear().range([0, height]);
+
+		var data = d3.layout.stack()( nodes.values );
+
+		x.domain(data[0].map(function(d) { return d.x; }));
+		y.domain([0, d3.max(data[data.length - 1], function(d) { return d.y0 + d.y; })]);
+
+		// Add a group for each column.
+		var valgroup = svg.selectAll("g.valgroup")
+			.data( data )
+			.enter().append("svg:g")
+			.attr("class", "valgroup")
+			.style("fill", function(d, i) { return self.color(i); })
+			.style("stroke", function(d, i) { return d3.rgb( self.color(i)).darker(); });
+
+		// Add a rect for each date.
+		var rect = valgroup.selectAll("rect")
+			.data(function(d){return d;})
+			.enter().append("svg:rect")
+			.attr("x", function(d) { return x(d.x); })
+			.attr("y", function(d) { return -y(d.y0) - y(d.y); })
+			.attr("height", function(d) { return y(d.y); })
+			.attr("width", x.rangeBand());
+
+		//parse = d3.time.format("%m/%Y").parse,
+		//format = d3.time.format("%b");
+
+		// Add a label per date.
+		svg.selectAll("text")
+			.data( nodes.labels )
+			.enter().append("svg:text")
+			.attr("x", function(d) { return x(d) + x.rangeBand() / 2; })
+			.attr("y", 6)
+			.attr("text-anchor", "middle")
+			.attr("dy", ".71em")
+			.text(function(d) { return d; });
+
+		// Add y-axis rules.
+		var rule = svg.selectAll("g.rule")
+			.data(y.ticks(5))
+			.enter().append("svg:g")
+			.attr("class", "rule")
+			.attr("transform", function(d) { return "translate(0," + -y(d) + ")"; });
+
+		rule.append("svg:line")
+			.attr("x2", width)
+			.style("stroke", function(d) { return d ? "#fff" : "#000"; })
+			.style("stroke-opacity", function(d) { return d ? 0.3 : null; });
+
+		rule.append("svg:text")
+			.attr("x", -20)
+			.attr("dy", ".35em")
+			.text(d3.format(",d"));
+
+	},
+
+	data: function(){
+		var self = this.self;
+
+		var label = self.options.chart.label,
+			value = self.options.chart.value;
+
+		var labels = self.models.map(function( data, i ){
+			return data[label];
+		});
+
+		var values = self.models.map(function( data, i ){
+			return { x : i, y : data[value] };
+		});
+
+		// in a stacked bar there's more than one passes from the models
+		return {
+			labels : labels,
+			values : [values]
+		};
+
+	}
 };
-        
+
 Cloudvisio.prototype.charts.stack = stack;
 
 var arc = d3.svg.arc();
 
 var pie = function( self ) {
 
-        this.self = self;
-        // setup options
-        self.set( this.defaults );
-    
-    };
-    
-pie.prototype = {
-    
-    layout: "pie",
-    
-    schema: {
-        label: "string",
-        value: "number"
-    },
-    
-    defaults: {
-        r : 384, // radius, height/2
-        ir : 0,
-        textOffset: 100,
-        chart: {
-            label: false,
-            value: false
-        }
-    }, 
-    
-    constructor: pie, 
-    
-    render: function( append ){ 
-        
-        var width = 1024, // internal (non-customizable) width 
-            height = 768, // internal (non-customizable) height 
-            self = this.self, 
-            data = this.data();
-        
-        // Insert an svg:svg element (with margin) for each row in our dataset. A
-        // child svg:g element translates the origin to the pie center.
-        var svg = d3.select( self.el + " "+ self.options.container)
-                    .data( data ) //associate our data with the document
-                    .append("svg:g")
-                    .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
-        
-        // add pie group
-        var pie = d3.layout.pie() //this will create arc data for us given a list of values
-                    .value(function(d) { return d.value; }) // Binding each value to the pie
-                    .sort( function(d) { return null; } );
-        
-        // Select all <g> elements with class slice (there aren't any yet)
-        var arcs = svg.selectAll("g.slice")
-          // Associate the generated pie data (an array of arcs, each having startAngle,
-          // endAngle and value properties) 
-          .data(pie)
-          // This will create <g> elements for every "extra" data element that should be associated
-          // with a selection. The result is creating a <g> for every object in the data array
-          .enter()
-          // Create a group to hold each slice (we will have a <path> and a <text>
-          // element associated with each slice)
-          .append("svg:g")
-          .attr("class", "slice");    //allow us to style things in the slices (like text)
-        
-        // The data for each svg:svg element is a row of numbers (an array). We pass
-        // that to d3.layout.pie to compute the angles for each arc. These start and end
-        // angles are passed to d3.svg.arc to draw arcs! Note that the arc radius is
-        // specified on the arc, not the layout.
-        
-        var slices = arcs.append("svg:path")
-            .attr("alt", function(d) { return d.data.label; }) 
-            .attr("d", arc
-                        .innerRadius( self.options.ir )
-                        .outerRadius( self.options.r )
-                 )
-            .style("fill", function(d, i) { return self.color( i ); });
-    
-        // animate slices
-        slices.transition()
-            .ease("cubic")
-            .duration(2000)
-            .attrTween("d", this.tweenPie);
-        
-        var label = arcs.append("svg:text") 
-            .style("font-size", function(d) { return Math.max( 1, (d.data.value/100) ) * 15; })                                   //add a label to each slice
-            .attr("fill", "white")
-            .attr("transform", function(d, i) {                    //set the label's origin to the center of the arc
-                //we have to make sure to set these before calling arc.centroid
-                d.innerRadius = self.options.r/2;
-                d.outerRadius = self.options.r;
-                return "translate(" + arc.centroid(d) + ")";        //this gives us a pair of coordinates like [50, 50]
-            })
-            .attr("text-anchor", "middle")                          //center the text on it's origin
-            .text(function(d, i) { return d.data.label; })        //get the label from our original data array
-            .style("opacity", 0)
-            .transition().ease("cubic").duration(2000).style("opacity", 1);
-            //.transition().ease("cubic").duration(2000).attrTween("opacity", d3.interpolateNumber(0, 100) );
+		this.self = self;
+		// setup options
+		self.set( this.defaults );
 
-    }, 
-    
-	data: function (){ 
-        var self = this.self,
-            data = [];
-        
-		var label = self.options.chart.label, 
+	};
+
+pie.prototype = {
+
+	layout: "pie",
+
+	schema: {
+		label: "string",
+		value: "number"
+	},
+
+	defaults: {
+		r : 384, // radius, height/2
+		ir : 0,
+		textOffset: 100,
+		chart: {
+			label: false,
+			value: false
+		}
+	},
+
+	constructor: pie,
+
+	render: function( append ){
+
+		var width = 1024, // internal (non-customizable) width
+			height = 768, // internal (non-customizable) height
+			self = this.self,
+			data = this.data();
+
+		// Insert an svg:svg element (with margin) for each row in our dataset. A
+		// child svg:g element translates the origin to the pie center.
+		var svg = d3.select( self.el + " "+ self.options.container)
+					.data( data ) //associate our data with the document
+					.append("svg:g")
+					.attr("transform", "translate(" + width/2 + "," + height/2 + ")");
+
+		// add pie group
+		var pie = d3.layout.pie() //this will create arc data for us given a list of values
+					.value(function(d) { return d.value; }) // Binding each value to the pie
+					.sort( function(d) { return null; } );
+
+		// Select all <g> elements with class slice (there aren't any yet)
+		var arcs = svg.selectAll("g.slice")
+			// Associate the generated pie data (an array of arcs, each having startAngle,
+			// endAngle and value properties)
+			.data(pie)
+			// This will create <g> elements for every "extra" data element that should be associated
+			// with a selection. The result is creating a <g> for every object in the data array
+			.enter()
+			// Create a group to hold each slice (we will have a <path> and a <text>
+			// element associated with each slice)
+			.append("svg:g")
+			.attr("class", "slice"); //allow us to style things in the slices (like text)
+
+		// The data for each svg:svg element is a row of numbers (an array). We pass
+		// that to d3.layout.pie to compute the angles for each arc. These start and end
+		// angles are passed to d3.svg.arc to draw arcs! Note that the arc radius is
+		// specified on the arc, not the layout.
+
+		var slices = arcs.append("svg:path")
+			.attr("alt", function(d) { return d.data.label; })
+			.attr("d", arc
+						.innerRadius( self.options.ir )
+						.outerRadius( self.options.r )
+				)
+			.style("fill", function(d, i) { return self.color( i ); });
+
+		// animate slices
+		slices.transition()
+			.ease("cubic")
+			.duration(2000)
+			.attrTween("d", this.tweenPie);
+
+		var label = arcs.append("svg:text")
+			.style("font-size", function(d) { return Math.max( 1, (d.data.value/100) ) * 15; })                                   //add a label to each slice
+			.attr("fill", "white")
+			.attr("transform", function(d, i) {                    //set the label's origin to the center of the arc
+				//we have to make sure to set these before calling arc.centroid
+				d.innerRadius = self.options.r/2;
+				d.outerRadius = self.options.r;
+				return "translate(" + arc.centroid(d) + ")";        //this gives us a pair of coordinates like [50, 50]
+			})
+			.attr("text-anchor", "middle")                          //center the text on it's origin
+			.text(function(d, i) { return d.data.label; })        //get the label from our original data array
+			.style("opacity", 0)
+			.transition().ease("cubic").duration(2000).style("opacity", 1);
+			//.transition().ease("cubic").duration(2000).attrTween("opacity", d3.interpolateNumber(0, 100) );
+
+	},
+
+	data: function (){
+		var self = this.self,
+			data = [];
+
+		var label = self.options.chart.label,
 			value = self.options.chart.value;
-	
+
 		data = self.models.map(function( data, i ){
 			return { label: data[label], value: data[value] };
 		});
-		
+
 		return [data];
-	},  
-    
-    // helpers
-    tweenPie: function(b) {
-        b.innerRadius = 0;
-        var i = d3.interpolate({startAngle: 0, endAngle: 0}, b);
-        return function(t) {
-            return arc(i(t));
-        };
-    }
+	},
+
+	// helpers
+	tweenPie: function(b) {
+		b.innerRadius = 0;
+		var i = d3.interpolate({startAngle: 0, endAngle: 0}, b);
+		return function(t) {
+			return arc(i(t));
+		};
+	}
 };
 
 
@@ -587,92 +587,92 @@ Cloudvisio.prototype.charts.pie = pie;
 // force chart
 var force = function( self ) {
 
-        this.self = self;
-        // setup options
-        self.set( this.defaults );
-    
-    };
-    
+		this.self = self;
+		// setup options
+		self.set( this.defaults );
+
+	};
+
 force.prototype = {
-    
-    layout: "force",
-    
-    schema: {
-        label: "string",
-        value: "number",
-        radius: "number"
-    },
-    
-    defaults: {
-        charge: -20,
-        distance: 30,
-        ir : 0,
-        radius: 5,
-        chart: {
-            label: false,
-            value: false,
-            radius: false
-        }
-    }, 
-    
-    constructor: force, 
-    
-    render: function( append ){ 
-        
-        var self = this.self;
-        var that = this;
-        var svg = d3.select( self.el + " "+ self.options.container);
-        var width = 1024,
-        height = 768;
-        
-        var data = this.nodes = this.data();
-        
-        var force = d3.layout.force()
-            .charge( self.options.charge )
-            .linkDistance( self.options.distance )
-            .size([width, height])
-            .nodes( data )
-            .links([])
-            .start();
-        
-        /*
-        var groups = d3.nest().key(function(d) { return d.group & 3; }).entries( nodes );
-        
-        var groupPath = function(d) {
-        return "M" + d3.geom.hull(d.values.map(function(i) { return [i.x, i.y]; })).join("L") + "Z";
-        };
-        
-        var groupFill = function(d, i) { return self.color(i & 3); };
-        */
-        this.node = svg.selectAll(".node")
-            .data( data ).enter()
-            .append("circle")
-            .attr("class", "node")
-            .attr("r", function(d) { return d.radius; })
-            .style("fill", function(d) { return self.color( d.group ); })
-            .call(force.drag);
-        
-        this.node.append("title")
-            .text(function(d) { return d.name; });
-        
-        force.on("tick", function(e){ that.update(e); });
-    
-    },
-    
-	// local 
+
+	layout: "force",
+
+	schema: {
+		label: "string",
+		value: "number",
+		radius: "number"
+	},
+
+	defaults: {
+		charge: -20,
+		distance: 30,
+		ir : 0,
+		radius: 5,
+		chart: {
+			label: false,
+			value: false,
+			radius: false
+		}
+	},
+
+	constructor: force,
+
+	render: function( append ){
+
+		var self = this.self;
+		var that = this;
+		var svg = d3.select( self.el + " "+ self.options.container);
+		var width = 1024,
+		height = 768;
+
+		var data = this.nodes = this.data();
+
+		var force = d3.layout.force()
+			.charge( self.options.charge )
+			.linkDistance( self.options.distance )
+			.size([width, height])
+			.nodes( data )
+			.links([])
+			.start();
+
+		/*
+		var groups = d3.nest().key(function(d) { return d.group & 3; }).entries( nodes );
+
+		var groupPath = function(d) {
+		return "M" + d3.geom.hull(d.values.map(function(i) { return [i.x, i.y]; })).join("L") + "Z";
+		};
+
+		var groupFill = function(d, i) { return self.color(i & 3); };
+		*/
+		this.node = svg.selectAll(".node")
+			.data( data ).enter()
+			.append("circle")
+			.attr("class", "node")
+			.attr("r", function(d) { return d.radius; })
+			.style("fill", function(d) { return self.color( d.group ); })
+			.call(force.drag);
+
+		this.node.append("title")
+			.text(function(d) { return d.name; });
+
+		force.on("tick", function(e){ that.update(e); });
+
+	},
+
+	// local
 	data: function(){
 		var self = this.self,
-            d = self.models;
+			d = self.models;
 		// get keys
 		//var keys = self.keys( d );
-		// required data: 
+		// required data:
 		// - name (string)
 		var name = self.options.chart.label,
-            group = self.options.chart.value,
-            radius = self.options.chart.radius;
-        // old code:
+			group = self.options.chart.value,
+			radius = self.options.chart.radius;
+		// old code:
 		// - group (integer)
-        /*
+		/*
 		if( keys.indexOf("id") > -1 ) name = "id";
 		if( keys.indexOf("title") > -1 ) name = "title";
 		if( keys.indexOf("label") > -1 ) name = "label";
@@ -680,194 +680,195 @@ force.prototype = {
 		for( var i in keys ){
 			if( keys[i].search(/group_/gi) === 0 ) group =  keys[i];
 		}
-        */
+		*/
 		//
 		var result = [];
 		for( var j in d ){
 			result.push({
-				name : d[j][name], 
+				name : d[j][name],
 				group : d[j][group],
-                // if radius is a number, use it as a static value
-                radius: ( isNaN(radius) )? d[j][radius] : radius
+				// if radius is a number, use it as a static value
+				radius: ( isNaN(radius) )? d[j][radius] : radius
 			});
 		}
 		//
 		return result;
-	}, 
-    
-    update: function(e) {
-        
-        // Push different nodes in different directions for clustering.
-        var k = 6 * e.alpha;
-        this.nodes.forEach(function(o, i) {
-            //o.x += i & 2 ? k : -k;
-            //o.y += i & 1 ? k : -k;
-            o.x += (o.group + 2) & 2 ? k : -k;
-            o.y += (o.group + 2) & 1 ? k : -k;
-        });
-        
-        var q = d3.geom.quadtree( this.nodes ),
-            i = 0,
-            n = this.nodes.length;
-            
-        while (++i < n) {
-            q.visit( this.collide( this.nodes[i] ));
-        }
-        
-        this.node.attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; });
-        
-        /*
-        svg.selectAll("path")
-        .data(groups)
-        .attr("d", groupPath)
-        .enter().insert("path", "circle")
-        .style("fill", groupFill)
-        .style("stroke", groupFill)
-        .style("stroke-width", 40)
-        .style("stroke-linejoin", "round")
-        .style("opacity", .2)
-        .attr("d", groupPath);
-        */
-        
-    },
-    
-    // Collision detection
-    // Source: https://gist.github.com/GerHobbelt/3116713
-    collide: function(node) {
-      var r = node.radius + 16,
-          nx1 = node.x - r,
-          nx2 = node.x + r,
-          ny1 = node.y - r,
-          ny2 = node.y + r;
-      return function(quad, x1, y1, x2, y2) {
-        if (quad.point && (quad.point !== node)) {
-          var x = node.x - quad.point.x,
-              y = node.y - quad.point.y,
-              l = Math.sqrt(x * x + y * y),
-              r = node.radius + quad.point.radius;
-          if (l < r) {
-            l = (l - r) / l * 0.5;
-            node.x -= x *= l;
-            node.y -= y *= l;
-            quad.point.x += x;
-            quad.point.y += y;
-          }
-        }
-        return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-      };
-    
-    }
-	
+	},
+
+	update: function(e) {
+
+		// Push different nodes in different directions for clustering.
+		var k = 6 * e.alpha;
+		this.nodes.forEach(function(o, i) {
+			//o.x += i & 2 ? k : -k;
+			//o.y += i & 1 ? k : -k;
+			o.x += (o.group + 2) & 2 ? k : -k;
+			o.y += (o.group + 2) & 1 ? k : -k;
+		});
+
+		var q = d3.geom.quadtree( this.nodes ),
+			i = 0,
+			n = this.nodes.length;
+
+		while (++i < n) {
+			q.visit( this.collide( this.nodes[i] ));
+		}
+
+		this.node.attr("cx", function(d) { return d.x; })
+			.attr("cy", function(d) { return d.y; });
+
+		/*
+		svg.selectAll("path")
+		.data(groups)
+		.attr("d", groupPath)
+		.enter().insert("path", "circle")
+		.style("fill", groupFill)
+		.style("stroke", groupFill)
+		.style("stroke-width", 40)
+		.style("stroke-linejoin", "round")
+		.style("opacity", .2)
+		.attr("d", groupPath);
+		*/
+
+	},
+
+	// Collision detection
+	// Source: https://gist.github.com/GerHobbelt/3116713
+	collide: function(node) {
+		var r = node.radius + 16,
+			nx1 = node.x - r,
+			nx2 = node.x + r,
+			ny1 = node.y - r,
+			ny2 = node.y + r;
+
+			return function(quad, x1, y1, x2, y2) {
+				if (quad.point && (quad.point !== node)) {
+				var x = node.x - quad.point.x,
+					y = node.y - quad.point.y,
+					l = Math.sqrt(x * x + y * y),
+					r = node.radius + quad.point.radius;
+				if (l < r) {
+					l = (l - r) / l * 0.5;
+					node.x -= x *= l;
+					node.y -= y *= l;
+					quad.point.x += x;
+					quad.point.y += y;
+				}
+			}
+		return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+		};
+
+	}
+
 };
 
 
-        
+
 Cloudvisio.prototype.charts.force = force;
 
 
 
 // rendering the visualization (generated once)
 Cloudvisio.prototype.render = function( append ){
-	
+
 	var chart = this.chart();
-    append = append || false;
-    
-    // clear container (by default)
-    if( !append ) {
-        d3.select( this.el ).html("");
-        this._container();
-    }
-    
-    var options = {
-        append : append
-    };
-    
-	if( chart !== null){ 
-		if( this.ready() ){ 
-            chart.render( options );
-        }
-    }
+	append = append || false;
+
+	// clear container (by default)
+	if( !append ) {
+		d3.select( this.el ).html("");
+		this._container();
+	}
+
+	var options = {
+		append : append
+	};
+
+	if( chart !== null){
+		if( this.ready() ){
+			chart.render( options );
+		}
+	}
 	//.transition().duration(500).call( this.chart() );
-	
-	
+
+
 };
 
 // updating visualization (on every tick)
 Cloudvisio.prototype.update = function(){
-	
+
 };
 
 // verifies that there's the minimum data for a chart
 Cloudvisio.prototype.ready = function( layout ){
-    // prerequisite - we need to have some data set...
-    if( this.models.length === 0 ) return false;
-    // main flag
-    var state = true,
-        chart, original_chart, original_options;
-    //
-    if(!arguments.length){ 
-        // evaluate the current layout
-        chart = this._chart;
-        
-    } else { 
-        // keep a reference of the original chart / options
-        original_chart = this._chart;
-        original_options = this.options.chart;
-        this.chart( layout );
-        chart = this._chart;
-    }
-    
-    // check if all the required attributes are set
-    for( var i in chart.schema ){
-        var option = this.options.chart[i] || false;
-        if(!option){ 
-            // lookup a suitable option
-            var type = chart.schema[i];
-            option = this._findAxis( type );
-            if( option ) { 
-                this.options.chart[i] = option;
-                continue;
-            } else {
-                state = false;
-            }
-        }
-    }
-    
-    // restore original layout if necessery
-    if( arguments.length ){
-        this._chart = original_chart;
-        this.options.chart = original_options;
-    }
-    //
-    return state;
+	// prerequisite - we need to have some data set...
+	if( this.models.length === 0 ) return false;
+	// main flag
+	var state = true,
+		chart, original_chart, original_options;
+	//
+	if(!arguments.length){
+		// evaluate the current layout
+		chart = this._chart;
+
+	} else {
+		// keep a reference of the original chart / options
+		original_chart = this._chart;
+		original_options = this.options.chart;
+		this.chart( layout );
+		chart = this._chart;
+	}
+
+	// check if all the required attributes are set
+	for( var i in chart.schema ){
+		var option = this.options.chart[i] || false;
+		if(!option){
+			// lookup a suitable option
+			var type = chart.schema[i];
+			option = this._findAxis( type );
+			if( option ) {
+				this.options.chart[i] = option;
+				continue;
+			} else {
+				state = false;
+			}
+		}
+	}
+
+	// restore original layout if necessery
+	if( arguments.length ){
+		this._chart = original_chart;
+		this.options.chart = original_options;
+	}
+	//
+	return state;
 };
 
 
 // updating options dynamically
 Cloudvisio.prototype.set = function( obj ){
 	if( !(obj instanceof Object) ) return this;
-    // "clean" obj first 
-    for( var i in obj){
-        if( i == "chart" ){
-            var options = this.options.chart || {};
-            var chart = obj[i];
-            // reset options now
-            this.options.chart = {};
-            // don't overwrite existing assignements
-            for( var j in chart ){
-                if( options[j] && typeof options[j] != "undefined" && !chart[j] ){
-                    obj[i][j] = options[j];
-                }
-            }
-        }
+	// "clean" obj first
+	for( var i in obj){
+		if( i == "chart" ){
+			var options = this.options.chart || {};
+			var chart = obj[i];
+			// reset options now
+			this.options.chart = {};
+			// don't overwrite existing assignements
+			for( var j in chart ){
+				if( options[j] && typeof options[j] != "undefined" && !chart[j] ){
+					obj[i][j] = options[j];
+				}
+			}
+		}
 	}
-    // merge the final object
-    utils.extend(this.options, obj);
-    // special condition for layouts
-    if( obj.layout ) this.chart( obj.layout );
-	
-	// 
+	// merge the final object
+	utils.extend(this.options, obj);
+	// special condition for layouts
+	if( obj.layout ) this.chart( obj.layout );
+
+	//
 	return this;
 };
 
@@ -875,17 +876,17 @@ Cloudvisio.prototype.set = function( obj ){
 // Internal methods
 // creates the chart container
 Cloudvisio.prototype._container = function(){
-	
+
 	var width = 1024,
-    height = 768;
+	height = 768;
 
 	var svg = d3.select( this.el )
 		.append( this.options.container );
-	
+
 	function redraw() {
 		svg.attr("transform", "translate("+ d3.event.translate +")" + " scale("+ d3.event.scale +")");
 	}
-	
+
 	svg.attr({
 			"width": this.options.width,
 			"height":  this.options.height
@@ -894,39 +895,39 @@ Cloudvisio.prototype._container = function(){
 		.attr("preserveAspectRatio", "xMidYMid meet")
 		.attr("pointer-events", "all")
 		.call(d3.behavior.zoom().on("zoom", redraw));
-		
+
 	return svg;
-	
+
 };
 
 // make an intelligent decision on what the next axis may be
 Cloudvisio.prototype._findAxis = function( type ){
-    // get the keys of the model
-    var keys = this.keys( this.models );
-    if( !keys ) return false;
-    var axis = utils.toArray( this.options.chart );
-    // loop through the keys
-    for( var i in keys ){
-        // check that the key hasn't been used
-        if( axis.indexOf( keys[i] ) > -1 ) continue;
-        // get type of field
-        if( type == this._findType( keys[i] )) return keys[i];
-    }
-    return false;
+	// get the keys of the model
+	var keys = this.keys( this.models );
+	if( !keys ) return false;
+	var axis = utils.toArray( this.options.chart );
+	// loop through the keys
+	for( var i in keys ){
+		// check that the key hasn't been used
+		if( axis.indexOf( keys[i] ) > -1 ) continue;
+		// get type of field
+		if( type == this._findType( keys[i] )) return keys[i];
+	}
+	return false;
 };
 
 // get the type of the selected field
 Cloudvisio.prototype._findType = function( key, data ){
-    var type = false;
-    data = data || this.models;
-    // loop through models
-    for(var i in data){
-        var itype = (typeof data[i][key] );
-        // if we've found more than one types exit
-        if( type && type != itype ) return "mixed";
-        type = itype;
-    }
-    return type;
+	var type = false;
+	data = data || this.models;
+	// loop through models
+	for(var i in data){
+		var itype = (typeof data[i][key] );
+		// if we've found more than one types exit
+		if( type && type != itype ) return "mixed";
+		type = itype;
+	}
+	return type;
 };
 
 // define the color spectrum
@@ -950,11 +951,11 @@ function loadTemplate(file) {
 	return file;
 }
 
-// Usage: 
+// Usage:
 //traverse(options.data,process);
 function traverse(o,func) {
 	for ( var i in o) {
-		func.apply(this, [i, o[i]]);  
+		func.apply(this, [i, o[i]]);
 		if (typeof o[i] == "object" ) {
 			//going on step down in the object tree!!
 			traverse(o[i], func);
@@ -964,30 +965,30 @@ function traverse(o,func) {
 
 
 var utils = {
-    
-    // Common.js extend method: https://github.com/commons/common.js
-    extend : function(destination, source) {
-        for (var property in source) {
-            if (source[property] && source[property].constructor && source[property].constructor === Object) {
-                destination[property] = destination[property] || {};
-                arguments.callee(destination[property], source[property]);
-            } else {
-                destination[property] = source[property];
-            }
-        }
-        return destination;
-    }, 
-    
-        
-    // convert an object to an array (loosing the keys)
-    toArray: function( obj ){
-        var array = [];
-        for( var i in obj ){
-            array.push( obj[i] );
-        }   
-        return array;
-    }
-     
+
+	// Common.js extend method: https://github.com/commons/common.js
+	extend : function(destination, source) {
+		for (var property in source) {
+			if (source[property] && source[property].constructor && source[property].constructor === Object) {
+				destination[property] = destination[property] || {};
+				arguments.callee(destination[property], source[property]);
+			} else {
+				destination[property] = source[property];
+			}
+		}
+		return destination;
+	},
+
+
+	// convert an object to an array (loosing the keys)
+	toArray: function( obj ){
+		var array = [];
+		for( var i in obj ){
+			array.push( obj[i] );
+		}
+		return array;
+	}
+
 };
 
 
