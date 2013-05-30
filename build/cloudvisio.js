@@ -1,24 +1,10 @@
-// @name cloudvisio - 0.5.0 (Thu, 30 May 2013 06:11:07 GMT)
+// @name cloudvisio - 0.5.0 (Thu, 30 May 2013 10:50:50 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
 // @license Apache License, Version 2.0
 
 if( !window.Cloudvisio ) (function( d3 ){
-var defaults = {
-	el: "#vis", 
-	layout: "stack", 
-	container: "svg", 
-	width: "100%", 
-	height: "100%", 
-	// The color scale will be assigned by index, but if you define your data using objects, you could pass
-	// in a named field from the data object instead, such as `d.name`. Colors are assigned lazily, 
-	// so if you want deterministic behavior, define a domain for the color scale.
-	colors: d3.scale.category20c(), 
-	//colors: d3.scale.ordinal().range(["darkblue", "blue", "lightblue"]);
-	chart: {}
-};
-
 // dependencies
 //var d3 = require("d3");
 
@@ -38,7 +24,6 @@ Cloudvisio = function( options ){
 	options.width = options.width || defaults.width;
 	options.height = options.height || defaults.height;
 	options.colors = options.colors || defaults.colors;
-	options.chart = options.chart || defaults.chart;
 	*/
 	// add the appropriate chart
 	//this.chart( options.layout );
@@ -62,6 +47,32 @@ Cloudvisio.prototype = {
 
 };
 
+
+var defaults = {
+	el: "#vis",
+	layout: "stack",
+	container: "svg",
+	width: "100%",
+	height: "100%",
+	// The color scale will be assigned by index, but if you define your data using objects, you could pass
+	// in a named field from the data object instead, such as `d.name`. Colors are assigned lazily,
+	// so if you want deterministic behavior, define a domain for the color scale.
+	colors: d3.scale.category20c()
+	//colors: d3.scale.ordinal().range(["darkblue", "blue", "lightblue"]);
+};
+
+
+// updating options dynamically
+Cloudvisio.prototype.set = function( obj ){
+	if( !(obj instanceof Object) ) return this;
+	// merge the final object
+	utils.extend(this.options, obj);
+	// special condition for layouts
+	if( obj.layout ) this.chart( obj.layout );
+
+	//
+	return this;
+};
 
 
 // this is where the axis will be stored
@@ -138,9 +149,10 @@ Cloudvisio.prototype.keys = function( data ){
 };
 
 // set an axis key (or return the whole array
-Cloudvisio.prototype.axis = function( key ){
+Cloudvisio.prototype.axis = function( key, value ){
 	// return the existing data if none is passed...
 	if (!arguments.length) return Object.keys( this.models[0] || {} );
+
 	// focus on a specific subset?
 	var data = this.data();
 	// lookup the key in the raw data
@@ -148,8 +160,11 @@ Cloudvisio.prototype.axis = function( key ){
 		// create model if necessary
 		if(typeof this.models[i] == "undefined" ) this.models[i] = {};
 
-		// there's currenty a 1-1 match between the data length and the models length...
-		if( typeof data[i][key] == "string" || typeof data[i][key] == "number"){
+		if(typeof value != "undefined"){
+			// if a value is passed just use that
+			this.models[i][key] = value;
+		} else if( typeof data[i][key] == "string" || typeof data[i][key] == "number"){
+			// there's currenty a 1-1 match between the data length and the models length...
 			this.models[i][key] = data[i][key];
 		} else if( typeof data[i][key] == "object" ){
 			// by priority look up a desciptive key in the object
@@ -161,6 +176,24 @@ Cloudvisio.prototype.axis = function( key ){
 		//
 
 	}
+	// setup the _axis
+	if(typeof value != "undefined") this._axis[key] = value;
+	/*
+	for( var i in obj){
+		if( i == "chart" ){
+			var options = this._axis || {};
+			var chart = obj[i];
+			// reset options now
+			this._axis = {};
+			// don't overwrite existing assignements
+			for( var j in chart ){
+				if( options[j] && typeof options[j] != "undefined" && !chart[j] ){
+					obj[i][j] = options[j];
+				}
+			}
+		}
+	}
+	*/
 	// maintain chanability
 	return this;
 };
@@ -209,7 +242,7 @@ Cloudvisio.prototype.group = function( groups, key){
 		}
 	}
 	// save groups for later
-	//this.options.chart["group_"+key] = groups;
+	//this._axis["group_"+key] = groups;
 	//'match(/(high)/gi, ).;
 	return this;
 };
@@ -240,8 +273,17 @@ Cloudvisio.prototype.type = function( key, options ){
 // Internal
 // - raw data container
 Cloudvisio.prototype._data = {};
+// - chart attributes
+Cloudvisio.prototype._axis = {};
 
 
+Cloudvisio.prototype._axisSchema = function( schema ){
+	// reset axis
+	self._axis = {};
+	for(var i in schema){
+		self._axis.i = false;
+	}
+};
 
 Cloudvisio.prototype.process = function( key, value ) {
 	console.log(key + " : "+value);
@@ -341,6 +383,8 @@ var stack = function( self ) {
 		this.self = self;
 		// setup options
 		self.set( this.defaults );
+		// set axis
+		self._axisSchema( this.schema );
 
 	};
 
@@ -354,10 +398,6 @@ stack.prototype = {
 	},
 
 	defaults: {
-		chart: {
-			label: false,
-			value: false
-		}
 	},
 
 	constructor: stack,
@@ -434,8 +474,8 @@ stack.prototype = {
 	data: function(){
 		var self = this.self;
 
-		var label = self.options.chart.label,
-			value = self.options.chart.value;
+		var label = self._axis.label,
+			value = self._axis.value;
 
 		var labels = self.models.map(function( data, i ){
 			return data[label];
@@ -463,6 +503,8 @@ var pie = function( self ) {
 		this.self = self;
 		// setup options
 		self.set( this.defaults );
+		// set axis
+		self._axisSchema( this.schema );
 
 	};
 
@@ -478,11 +520,7 @@ pie.prototype = {
 	defaults: {
 		r : 384, // radius, height/2
 		ir : 0,
-		textOffset: 100,
-		chart: {
-			label: false,
-			value: false
-		}
+		textOffset: 100
 	},
 
 	constructor: pie,
@@ -559,8 +597,8 @@ pie.prototype = {
 		var self = this.self,
 			data = [];
 
-		var label = self.options.chart.label,
-			value = self.options.chart.value;
+		var label = self._axis.label,
+			value = self._axis.value;
 
 		data = self.models.map(function( data, i ){
 			return { label: data[label], value: data[value] };
@@ -590,6 +628,8 @@ var force = function( self ) {
 		this.self = self;
 		// setup options
 		self.set( this.defaults );
+		// set axis
+		self._axisSchema( this.schema );
 
 	};
 
@@ -607,12 +647,7 @@ force.prototype = {
 		charge: -20,
 		distance: 30,
 		ir : 0,
-		radius: 5,
-		chart: {
-			label: false,
-			value: false,
-			radius: false
-		}
+		radius: 5
 	},
 
 	constructor: force,
@@ -667,9 +702,9 @@ force.prototype = {
 		//var keys = self.keys( d );
 		// required data:
 		// - name (string)
-		var name = self.options.chart.label,
-			group = self.options.chart.value,
-			radius = self.options.chart.radius;
+		var name = self._axis.label,
+			group = self._axis.value,
+			radius = self._axis.radius;
 		// old code:
 		// - group (integer)
 		/*
@@ -814,20 +849,20 @@ Cloudvisio.prototype.ready = function( layout ){
 	} else {
 		// keep a reference of the original chart / options
 		original_chart = this._chart;
-		original_options = this.options.chart;
+		original_options = this._axis;
 		this.chart( layout );
 		chart = this._chart;
 	}
 
 	// check if all the required attributes are set
 	for( var i in chart.schema ){
-		var option = this.options.chart[i] || false;
+		var option = this._axis[i] || false;
 		if(!option){
 			// lookup a suitable option
 			var type = chart.schema[i];
 			option = this._findAxis( type );
 			if( option ) {
-				this.options.chart[i] = option;
+				this._axis[i] = option;
 				continue;
 			} else {
 				state = false;
@@ -838,39 +873,12 @@ Cloudvisio.prototype.ready = function( layout ){
 	// restore original layout if necessery
 	if( arguments.length ){
 		this._chart = original_chart;
-		this.options.chart = original_options;
+		this._axis = original_options;
 	}
 	//
 	return state;
 };
 
-
-// updating options dynamically
-Cloudvisio.prototype.set = function( obj ){
-	if( !(obj instanceof Object) ) return this;
-	// "clean" obj first
-	for( var i in obj){
-		if( i == "chart" ){
-			var options = this.options.chart || {};
-			var chart = obj[i];
-			// reset options now
-			this.options.chart = {};
-			// don't overwrite existing assignements
-			for( var j in chart ){
-				if( options[j] && typeof options[j] != "undefined" && !chart[j] ){
-					obj[i][j] = options[j];
-				}
-			}
-		}
-	}
-	// merge the final object
-	utils.extend(this.options, obj);
-	// special condition for layouts
-	if( obj.layout ) this.chart( obj.layout );
-
-	//
-	return this;
-};
 
 
 // Internal methods
@@ -905,7 +913,7 @@ Cloudvisio.prototype._findAxis = function( type ){
 	// get the keys of the model
 	var keys = this.keys( this.models );
 	if( !keys ) return false;
-	var axis = utils.toArray( this.options.chart );
+	var axis = utils.toArray( this._axis );
 	// loop through the keys
 	for( var i in keys ){
 		// check that the key hasn't been used
