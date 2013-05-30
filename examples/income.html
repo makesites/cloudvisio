@@ -13,7 +13,7 @@
 var vis;
 
 $(function(){
-	
+
 	// insert code here...
 	vis = new Cloudvisio();
 	// source: http://api.worldbank.org/countries?format=json&per_page=300&json
@@ -22,14 +22,14 @@ $(function(){
 		vis.data( data[1] );
 		console.log("available keys: ", vis.keys() );
 		vis.set({ layout: "force" });
-		vis.set({ chart: { radius: 5 } });
+		vis.axis("radius", 5);
 		// create a new axis
 		vis.axis("name");
 		vis.group(["high", "Medium", "Low"], "incomeLevel");
-		
+
 		vis.render();
 	});
-	
+
 });
 
 </script>
@@ -56,25 +56,25 @@ header {
 <body>
 
 <header>
-    <h2>Per capita income</h2>
-    <h3>countries split in high/medium/low groups</h3>
-    <p>Data from <a href="http://data.worldbank.org/developers">worldbank.org</a></p>
-    <pre>
-    vis = new Cloudvisio();
-	
-    d3.json("data/income.json", function( data ){
-		
-        vis.data( data[1] );
-		
-        vis.set({ layout: "force" });
-		vis.set({ chart: { radius: 5 } });
-		
-        vis.axis("name");
+	<h2>Per capita income</h2>
+	<h3>countries split in high/medium/low groups</h3>
+	<p>Data from <a href="http://data.worldbank.org/developers">worldbank.org</a></p>
+	<pre>
+	vis = new Cloudvisio();
+
+	d3.json("data/income.json", function( data ){
+
+		vis.data( data[1] );
+
+		vis.set({ layout: "force" });
+		vis.axis("radius", 5);
+
+		vis.axis("name");
 		vis.group(["high", "Medium", "Low"], "incomeLevel");
-		
+
 		vis.render();
 	});
-    </pre>
+	</pre>
 </header>
 
 <div id="vis"><!-- --></div>

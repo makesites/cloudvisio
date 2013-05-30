@@ -13,23 +13,21 @@
 var vis;
 
 $(function(){
-	
+
 	// insert code here...
 	vis = new Cloudvisio({
-		layout: "pie",
-		chart: {
-			label : "country", 
-			value : "population"
-		}
-	});
-	// 
+		layout: "pie"
+	})
+	.axis("label", "country")
+	.axis("value", "population");
+	//
 	d3.json("data/population.json", function( data ){
 		//
 		vis.parse( data );
-		// 
+		//
 		vis.render();
 	});
-	
+
 });
 
 </script>
@@ -58,22 +56,20 @@ header {
 <header>
 	<h2>Country population</h2>
 	<p>In this example we are using <a href="data/population.json">normalized data</a>.</p>
-    <pre>
-    vis = new Cloudvisio({
-		layout: "pie",
-		chart: {
-			label : "country", 
-			value : "population"
-		}
-	});
+	<pre>
+	vis = new Cloudvisio({
+		layout: "pie"
+	})
+	.axis("label", "country")
+	.axis("value", "population");
 
-    d3.json("data/population.json", function( data ){
-		
-        vis.parse( data );
+	d3.json("data/population.json", function( data ){
+
+		vis.parse( data );
 		vis.render();
-    
+
 	});
-    </pre>
+	</pre>
 </header>
 
 <div id="vis"><!-- --></div>
