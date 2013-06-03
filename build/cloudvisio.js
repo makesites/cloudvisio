@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 00:50:59 GMT)
+// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 06:34:59 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -328,9 +328,17 @@ Cloudvisio.prototype.lt = function( number, field ){
 
 
 // convert the regular expression into a string
-Cloudvisio.prototype.verbalize = function(){
-	
+Cloudvisio.prototype.verbalize = function( query ){
+	// replace signs
+	query = query.replace(/\+/gi, " and ");
+	query = query.replace(/>/gi, " greater than ");
+	query = query.replace(/</gi, " less than ");
+
+	// remove unnecessary spaces
+	query = query.replace(/  /gi, " ");
 };
+
+
 
 // Helpers
 
