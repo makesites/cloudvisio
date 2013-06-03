@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 12:48:39 GMT)
+// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 12:58:14 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -882,9 +882,9 @@ Cloudvisio.prototype.render = function( append ){
 		append : append
 	};
 
-	if( !this.ready() && this.options.renderErrors ){
+	if( !this.ready() ){
 		// exit now with an error message
-		return this.status("string");
+		return ( this.options.renderErrors ) ? this.status("string") : this.status();
 	}
 	// ready to create chart
 	// clear container (by default)
