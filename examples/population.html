@@ -18,8 +18,10 @@ $(function(){
 	vis = new Cloudvisio({
 		layout: "pie"
 	})
-	.axis("label", "country")
-	.axis("value", "population");
+	.axis({
+		label: "country",
+		value: "population"
+	});
 	//
 	d3.json("data/population.json", function( data ){
 		//
@@ -60,14 +62,14 @@ header {
 	vis = new Cloudvisio({
 		layout: "pie"
 	})
-	.axis("label", "country")
-	.axis("value", "population");
+	.axis({
+		label: "country",
+		value: "population"
+	});
 
 	d3.json("data/population.json", function( data ){
-
 		vis.parse( data );
 		vis.render();
-
 	});
 	</pre>
 </header>

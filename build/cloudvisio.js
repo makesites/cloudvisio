@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Thu, 30 May 2013 10:50:50 GMT)
+// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 00:32:11 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -152,6 +152,12 @@ Cloudvisio.prototype.keys = function( data ){
 Cloudvisio.prototype.axis = function( key, value ){
 	// return the existing data if none is passed...
 	if (!arguments.length) return Object.keys( this.models[0] || {} );
+	// #24 if key is an object loop through options
+	if( key instanceof Object ){
+		for( var k in key ){
+			this.axis( k, key[k] );
+		}
+	}
 
 	// focus on a specific subset?
 	var data = this.data();
