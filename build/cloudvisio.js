@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 00:32:11 GMT)
+// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 00:50:59 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -247,9 +247,9 @@ Cloudvisio.prototype.group = function( groups, key){
 			this.models[i]["group_"+key] = -1;
 		}
 	}
-	// save groups for later
-	//this._axis["group_"+key] = groups;
-	//'match(/(high)/gi, ).;
+	// save latest group
+	this._axis.group = "group_"+key;
+
 	return this;
 };
 
@@ -645,7 +645,7 @@ force.prototype = {
 
 	schema: {
 		label: "string",
-		value: "number",
+		group: "number",
 		radius: "number"
 	},
 
@@ -709,7 +709,7 @@ force.prototype = {
 		// required data:
 		// - name (string)
 		var name = self._axis.label,
-			group = self._axis.value,
+			group = self._axis.group,
 			radius = self._axis.radius;
 		// old code:
 		// - group (integer)
