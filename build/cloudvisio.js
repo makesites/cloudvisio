@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 11:18:37 GMT)
+// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 12:26:09 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -110,6 +110,8 @@ Cloudvisio.prototype.parse = function( data ){
 		// assume one element
 		this.models.push( data );
 	}
+	// setup the axis by checking if the chart is ready
+	this.ready();
 	// allow method chaining
 	return this;
 };
