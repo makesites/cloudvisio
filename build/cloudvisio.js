@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 06:34:59 GMT)
+// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 07:38:31 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -31,8 +31,6 @@ Cloudvisio = function( options ){
 	//this.options = utils.extend( this.options, options );
 	this.set( options );
 
-	// setup
-	this._container();
 };
 
 Cloudvisio.prototype = {
@@ -285,9 +283,9 @@ Cloudvisio.prototype._axis = {};
 
 Cloudvisio.prototype._axisSchema = function( schema ){
 	// reset axis
-	self._axis = {};
+	this._axis = {};
 	for(var i in schema){
-		self._axis.i = false;
+		this._axis[i] = false;
 	}
 };
 
@@ -338,7 +336,12 @@ Cloudvisio.prototype.verbalize = function( query ){
 	query = query.replace(/  /gi, " ");
 };
 
+Cloudvisio.prototype.status = function( type ){
+	console.log( this._axis );
+	//var el = d3.select( this.el );
 
+
+};
 
 // Helpers
 
@@ -819,25 +822,29 @@ Cloudvisio.prototype.charts.force = force;
 
 // rendering the visualization (generated once)
 Cloudvisio.prototype.render = function( append ){
-
-	var chart = this.chart();
+	// fallbacks
 	append = append || false;
+	// chart is a prerequisite
+	var chart = this.chart();
+	if( chart === null) return;
 
+	var options = {
+		append : append
+	};
+
+	if( !this.ready() ){
+		// exit now with an error message
+		return this.status("string");
+	}
+	// ready to create chart
 	// clear container (by default)
 	if( !append ) {
 		d3.select( this.el ).html("");
 		this._container();
 	}
 
-	var options = {
-		append : append
-	};
+	chart.render( options );
 
-	if( chart !== null){
-		if( this.ready() ){
-			chart.render( options );
-		}
-	}
 	//.transition().duration(500).call( this.chart() );
 
 
