@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 12:26:09 GMT)
+// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 12:48:39 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -889,7 +889,6 @@ Cloudvisio.prototype.render = function( append ){
 	// ready to create chart
 	// clear container (by default)
 	if( !append ) {
-		d3.select( this.el ).html("");
 		this._container();
 	}
 
@@ -959,7 +958,7 @@ Cloudvisio.prototype._container = function(){
 	var width = 1024,
 	height = 768;
 
-	var svg = d3.select( this.el )
+	var svg = d3.select( this.el ).html("")
 		.append( this.options.container );
 
 	function redraw() {
