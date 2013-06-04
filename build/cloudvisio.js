@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Mon, 03 Jun 2013 12:58:14 GMT)
+// @name cloudvisio - 0.5.0 (Tue, 04 Jun 2013 11:16:06 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -249,7 +249,9 @@ Cloudvisio.prototype.group = function( groups, key){
 		}
 	}
 	// save latest group
-	this._axis.group = "group_"+key;
+	// #30 pick the right axis
+	var field  = _lookupSchema("number", "group_"+key);
+	this._axis[field] = "group_"+key;
 
 	return this;
 };
@@ -439,6 +441,27 @@ Cloudvisio.prototype.charts = {};
 //	Cloudvisio.prototype.charts[ charts[i] ] = charts[i];
 //}
 
+Cloudvisio.prototype._lookupSchema = function( type, preferred ){
+	// fallbacks
+	type = type || false;
+	preferred = preferred || false;
+	// prerequisite
+	if( !type ) return false;
+	// variables
+	var keys = Object.keys( this._axis );
+	if( !keys ) return false;
+	var schema = this.chart().schema;
+	// if there's a preferred field, try to pick that
+	console.log("schema", schema);
+	if( preferred && keys[preferred] && schema[preferred] == type){
+		console.log("preferred", preferred);
+		return preferred;
+	}
+	for( var i in schema ){
+		if( schema[i] == type ) return i;
+	}
+	return false;
+};
 
 // Internal
 // - instantiated chart
