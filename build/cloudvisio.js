@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Wed, 05 Jun 2013 12:27:01 GMT)
+// @name cloudvisio - 0.5.0 (Wed, 05 Jun 2013 12:34:58 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -224,12 +224,17 @@ Cloudvisio.prototype.group = function( groups, key, options){
 	// reset models if needed
 	if( options.reset ){
 		// create a model set equal to the length of the groups
-		this.models = new Array(groups.length+1);
+		var length = (groups.length === 1) ? groups.length+1 : groups.length;
+		this.models = new Array( length );
 		field = "value";
 		for( var k = 0; k < this.models.length; k++ ){
 			this.models[k] = {};
 			this.models[k][field] = 0;
-			this.models[k].label = "";
+			if( options.labels ){
+				this.models[k].label = groups[k] || "not "+ groups[k-1];
+			}else {
+				this.models[k].label = "";
+			}
 		}
 	} else {
 		field = "group_"+key;
