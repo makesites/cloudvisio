@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Tue, 04 Jun 2013 11:16:06 GMT)
+// @name cloudvisio - 0.5.0 (Tue, 04 Jun 2013 11:24:28 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -250,7 +250,7 @@ Cloudvisio.prototype.group = function( groups, key){
 	}
 	// save latest group
 	// #30 pick the right axis
-	var field  = _lookupSchema("number", "group_"+key);
+	var field  = this._lookupSchema("number", "group_"+key);
 	this._axis[field] = "group_"+key;
 
 	return this;
