@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<title>Gist example - Cloudvisio</title>
+<!-- Dependencies -->
+<script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js"></script>
+<!-- Cloudvisio lib -->
+<script type="text/javascript" src="../build/cloudvisio.js"></script>
+<!-- Example code -->
+<script type="text/javascript">
+// variables
+var vis;
+
+$(function(){
+
+	vis = new Cloudvisio({
+		layout: "pie"
+	});
+	requestUser();
+});
+
+function requestUser(){
+	var user = prompt("Please enter your Github username","wycats");
+	if (user!=null && user!=""){
+		getData( user );
+	}
+}
+
+function getData( user ){
+
+	$.getJSON("https://api.github.com/users/"+ user +"/repos", function(response){
+		//console.log(response);
+		renderGraph( response );
+	});
+
+}
+
+function renderGraph( data ){
+	vis.data( data );
+	vis.select("fork").find(true, { labels: true });
+	vis.render();
+}
+
+</script>
+
+<!-- Example styling -->
+<style type="text/css">
+#vis {
+	width: 100%;
+	height: 100%;
+}
+
+header {
+	position: absolute;
+	padding: 12px;
+}
+
+</style>
+
+</head>
+<body>
+
+<header>
+	<h2>Forks</h2>
+	<p>Check how many of any user's repositories are forks</p>
+	<pre>
+	vis = new Cloudvisio({
+		layout: "pie"
+	});
+	vis.select("fork").find(true, { labels: true });
+	vis.render();
+	</pre>
+</header>
+
+<div id="vis"><!-- --></div>
+
+</body>
+</html>
