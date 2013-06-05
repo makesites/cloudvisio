@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Wed, 05 Jun 2013 11:38:31 GMT)
+// @name cloudvisio - 0.5.0 (Wed, 05 Jun 2013 11:52:12 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -126,12 +126,15 @@ Cloudvisio.prototype.search = function( query, field ){
 
 // lookup a value in a field
 Cloudvisio.prototype.find = function( query, options ){
+	options = options || {};
 	// exit now if theres no selected field
 	if( !this._selectedField ) return;
 	var field = this._selectedField;
 	// check if the query is a boolean
 	if( typeof query == "boolean" ) query = (query) ? "true" : "false";
-	this.group( [query], field);
+	// a find() always resets the axis?
+	options.reset = true;
+	this.group( [query], field, options);
 
 };
 
@@ -210,7 +213,10 @@ Cloudvisio.prototype.axis = function( key, value ){
 };
 
 // create an axis by grouping the raw data
-Cloudvisio.prototype.group = function( groups, key){
+Cloudvisio.prototype.group = function( groups, key, options){
+	// fallbacks
+	options = options || {};
+	// variables
 	var data = this.data();
 	// convert groups to lower case
 	groups = groups.join("`").toLowerCase().split("`");
