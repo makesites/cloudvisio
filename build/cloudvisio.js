@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Wed, 05 Jun 2013 10:13:13 GMT)
+// @name cloudvisio - 0.5.0 (Wed, 05 Jun 2013 11:38:31 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -124,8 +124,14 @@ Cloudvisio.prototype.search = function( query, field ){
 	return this;
 };
 
-// lookup a query
+// lookup a value in a field
 Cloudvisio.prototype.find = function( query, options ){
+	// exit now if theres no selected field
+	if( !this._selectedField ) return;
+	var field = this._selectedField;
+	// check if the query is a boolean
+	if( typeof query == "boolean" ) query = (query) ? "true" : "false";
+	this.group( [query], field);
 
 };
 
@@ -254,6 +260,16 @@ Cloudvisio.prototype.group = function( groups, key){
 	return this;
 };
 
+
+// select a field from the raw dataset
+Cloudvisio.prototype.select = function( field ){
+	var keys = this.keys();
+	this._selectedField = (keys.indexOf(field) > -1 )? field : false;
+
+	return this;
+};
+
+
 // removing axis
 Cloudvisio.prototype.remove = function( axis ){
 	for( var i in this.models ){
@@ -282,6 +298,8 @@ Cloudvisio.prototype.type = function( key, options ){
 Cloudvisio.prototype._data = [];
 // - chart attributes
 Cloudvisio.prototype._axis = {};
+// - chart attributes
+Cloudvisio.prototype._selectedField = false;
 
 
 Cloudvisio.prototype._axisSchema = function( schema ){
@@ -459,7 +477,7 @@ Cloudvisio.prototype._lookupSchema = function( type, preferred ){
 	if( !keys ) return false;
 	var schema = this.chart().schema;
 	// if there's a preferred field, try to pick that
-	console.log("schema", schema);
+	//console.log("schema", schema);
 	if( preferred && keys[preferred] && schema[preferred] == type){
 		console.log("preferred", preferred);
 		return preferred;
