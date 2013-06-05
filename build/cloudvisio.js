@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Wed, 05 Jun 2013 11:52:12 GMT)
+// @name cloudvisio - 0.5.0 (Wed, 05 Jun 2013 12:27:01 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -218,12 +218,30 @@ Cloudvisio.prototype.group = function( groups, key, options){
 	options = options || {};
 	// variables
 	var data = this.data();
+	var field;
 	// convert groups to lower case
 	groups = groups.join("`").toLowerCase().split("`");
+	// reset models if needed
+	if( options.reset ){
+		// create a model set equal to the length of the groups
+		this.models = new Array(groups.length+1);
+		field = "value";
+		for( var k = 0; k < this.models.length; k++ ){
+			this.models[k] = {};
+			this.models[k][field] = 0;
+			this.models[k].label = "";
+		}
+	} else {
+		field = "group_"+key;
+	}
 	// lookup the right axis
 	for( var i in data ){
-		// create the model it this is the first axis
-		this.models[i] = this.models[i] || {};
+		var model;
+		if( !options.reset ){
+			// create the model if this is the first axis
+			this.models[i] = this.models[i] || {};
+			model = this.models[i];
+		}
 		if( typeof data[i][key] != "undefined"){
 			// convert any value to string
 			var value = (data[i][key] instanceof Object) ? utils.toArray( data[i][key] ).join("|") : ""+data[i][key]+"";
@@ -235,9 +253,17 @@ Cloudvisio.prototype.group = function( groups, key, options){
 			if(matches instanceof Array){
 				// are we expecting more than one matches??
 				var group = matches.pop().toLowerCase();
-				this.models[i]["group_"+key] = groups.indexOf( group );
+				if( options.reset ){
+					this.models[ groups.indexOf( group ) ][field] += 1;
+				} else {
+					this.models[i][field] = groups.indexOf( group );
+				}
 			} else {
-				this.models[i]["group_"+key] = -1;
+				if( options.reset ){
+					this.models[groups.length][field] += 1;
+				} else {
+					this.models[i][field] = -1;
+				}
 			}
 			/*
 			// support types other than string
@@ -255,13 +281,17 @@ Cloudvisio.prototype.group = function( groups, key, options){
 			*/
 		} else {
 			//model["group_"+axis] = null;
-			this.models[i]["group_"+key] = -1;
+			if( options.reset ){
+				this.models[groups.length][field] += 1;
+			} else {
+				this.models[i][field] = -1;
+			}
 		}
 	}
 	// save latest group
 	// #30 pick the right axis
-	var field  = this._lookupSchema("number", "group_"+key);
-	this._axis[field] = "group_"+key;
+	var selected  = this._lookupSchema("number", field);
+	this._axis[selected] = field;
 
 	return this;
 };
