@@ -28,6 +28,7 @@ concat({
 		'lib/options.js',
 		'lib/data.js',
 		'lib/math.js',
+		'lib/regex.js',
 		'lib/language.js',
 		'lib/chart.js',
 		'lib/charts/stack.js',
