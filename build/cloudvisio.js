@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Wed, 05 Jun 2013 12:34:58 GMT)
+// @name cloudvisio - 0.5.0 (Thu, 06 Jun 2013 10:02:41 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -81,8 +81,9 @@ Cloudvisio.prototype.models = [];
 Cloudvisio.prototype.data = function( raw, options ){
 	// fallbacks
 	options = options || {};
+	var data = (this._filteredData.length) ? this._filteredData : this._data;
 	// return the existing data if none is passed...
-	if (!arguments.length) return this._data;
+	if (!arguments.length) return data;
 	// do some calculations
 	this._data = raw;
 	// reset the models
@@ -337,6 +338,8 @@ Cloudvisio.prototype.type = function( key, options ){
 // Internal
 // - raw data container
 Cloudvisio.prototype._data = [];
+// - filtered data
+Cloudvisio.prototype._filteredData = [];
 // - chart attributes
 Cloudvisio.prototype._axis = {};
 // - chart attributes
@@ -372,29 +375,62 @@ Cloudvisio.prototype.match = function( query, field ){
 };
 
 
-Cloudvisio.prototype.eq = function( number, field ){
+Cloudvisio.prototype.eq = function( number, options ){
 	//
-
+	options = options || {};
+	options.eq = true;
+	this._filterNumber( number, options );
 	// allow method chaining
 	return this;
 };
 
 
-Cloudvisio.prototype.gt = function( number, field ){
-
-
+Cloudvisio.prototype.gt = function( number, options ){
+	//
+	options = options || {};
+	options.gt = true;
+	this._filterNumber( number, options );
 	// allow method chaining
 	return this;
 };
 
 
-Cloudvisio.prototype.lt = function( number, field ){
-
-
+Cloudvisio.prototype.lt = function( number, options ){
+	//
+	options = options || {};
+	options.lt = true;
+	this._filterNumber( number, options );
 	// allow method chaining
 	return this;
 };
 
+
+// Applying a filter based on an operator
+Cloudvisio.prototype._filterNumber = function( number, options ){
+	//
+	options = options || {};
+	var field = this._selectedField || options.field || false;
+	// exit now if theres no selected field
+	if( !field ) return;
+	// check if the query is a number
+	if(typeof number != "number") return;
+	// get the data
+	var data = this.data();
+	// reset filtered data - should be part of data()?
+	this._filteredData = [];
+	//
+	for( var i in data ){
+		if( options.eq && data[i][field] === number){
+			this._filteredData.push( data[i] );
+		}
+		if( options.lt && data[i][field] < number){
+			this._filteredData.push( data[i] );
+		}
+		if( options.gt && data[i][field] > number){
+			this._filteredData.push( data[i] );
+		}
+	}
+};
 
 // convert the regular expression into a string
 Cloudvisio.prototype.verbalize = function( query ){
