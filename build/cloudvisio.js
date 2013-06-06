@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Thu, 06 Jun 2013 10:59:43 GMT)
+// @name cloudvisio - 0.5.0 (Thu, 06 Jun 2013 11:03:32 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -311,6 +311,7 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 		}
 	}
 };
+// Public methods
 
 Cloudvisio.prototype.match = function( string, options ){
 	//
@@ -438,6 +439,8 @@ Cloudvisio.prototype.group = function( groups, key, options){
 	return this;
 };
 
+
+// Internal methods
 
 // Applying a filter based on an regulat expression
 Cloudvisio.prototype._filterString = function( string, options ){
