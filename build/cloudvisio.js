@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Thu, 06 Jun 2013 10:46:23 GMT)
+// @name cloudvisio - 0.5.0 (Thu, 06 Jun 2013 10:59:43 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -323,9 +323,11 @@ Cloudvisio.prototype.match = function( string, options ){
 
 
 // filter the data based on a regular expression
-Cloudvisio.prototype.search = function( query, field ){
-	var exp = new RegExp(query);
-	//...
+Cloudvisio.prototype.search = function( string, options ){
+	//
+	options = options || {};
+	options.search = true;
+	this._filterString( string, options );
 	// allow method chaining
 	return this;
 };
@@ -455,10 +457,13 @@ Cloudvisio.prototype._filterString = function( string, options ){
 		if( options.match && data[i][field] === string){
 			this._filteredData.push( data[i] );
 		}
-		/*
-		if( options.ma && data[i][field] < number){
-			this._filteredData.push( data[i] );
+		if( options.search ){
+			var exp = new RegExp(string);
+			if( data[i][field].search(exp) > -1 ){
+				this._filteredData.push( data[i] );
+			}
 		}
+		/*
 		if( options.gt && data[i][field] > number){
 			this._filteredData.push( data[i] );
 		}
