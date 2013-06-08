@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-<title>Gist example - Cloudvisio</title>
+<title>Cloudvisio :: Forks example</title>
 <!-- Dependencies -->
 <script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js"></script>
@@ -38,7 +38,8 @@ function getData( user ){
 
 function renderGraph( data ){
 	vis.data( data );
-	vis.select("fork").find(true, { labels: true });
+	vis.select("fork").find(true);
+	vis.amount({ labels: true });
 	vis.render();
 }
 
@@ -68,7 +69,8 @@ header {
 	vis = new Cloudvisio({
 		layout: "pie"
 	});
-	vis.select("fork").find(true, { labels: true });
+	vis.select("fork").find(true);
+	vis.amount({ labels: true });
 	vis.render();
 	</pre>
 </header>
