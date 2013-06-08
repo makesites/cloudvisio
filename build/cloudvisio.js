@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Thu, 06 Jun 2013 11:03:32 GMT)
+// @name cloudvisio - 0.5.0 (Sat, 08 Jun 2013 10:45:49 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -78,20 +78,45 @@ Cloudvisio.prototype.set = function( obj ){
 Cloudvisio.prototype.models = [];
 
 // load a dataset
-Cloudvisio.prototype.data = function( raw, options ){
+Cloudvisio.prototype.data = function( models, options ){
 	// fallbacks
 	options = options || {};
 	var data = (this._filteredData.length) ? this._filteredData : this._data;
 	// return the existing data if none is passed...
 	if (!arguments.length) return data;
-	// do some calculations
-	this._data = raw;
+	// check if the data we're adding is in an array
+	if( models instanceof Array){
+		// resetting only is set with an option
+		if( options.reset ){
+			data = models;
+		} else {
+			data = data.concat(models);
+		}
+	} else if( models instanceof Object) {
+		// all individual imports are silent
+		options.silent = true;
+		// passing the key as an option - better way?
+		if( options.key ){
+			data[options.key] = models;
+		} else {
+			data.push(models);
+		}
+	} else {
+		// nothing else supported for now
+		return this;
+	}
 	// reset the models
 	if( options.silent ){
 		// don't erase models
 	} else {
 		// reset the models
 		this.models = [];
+	}
+	// save data back to the common container
+	if(this._filteredData.length){
+		this._filteredData = data;
+	} else {
+		this._data = data;
 	}
 	// allow method chaining
 	return this;
@@ -199,6 +224,37 @@ Cloudvisio.prototype.select = function( field ){
 	return this;
 };
 
+// calculate axis based on the queries
+Cloudvisio.prototype.amount = function( options ){
+	// get the (active) data
+	var data = this.data();
+	// also reset models?
+	var calculated = 0;
+	// lookup all the queries
+	for(var i in this._queries ){
+		var model = {
+			label: "",
+			value: 0
+		};
+		for(var j in data ){
+			model.value += data[j][i];
+		}
+		// add labels
+		if(options.labels){
+			model.label = this._queries[i].toString();
+		}
+		// save the query result as a new axis
+		this.models.push(model);
+	}
+	// add another item with the remaining
+	if( calculated < data.length ){
+		this.models.push({
+			label: "other",
+			value: data.length - calculated
+		});
+	}
+
+};
 
 // removing axis
 Cloudvisio.prototype.remove = function( axis ){
@@ -228,11 +284,12 @@ Cloudvisio.prototype.type = function( key, options ){
 Cloudvisio.prototype._data = [];
 // - filtered data
 Cloudvisio.prototype._filteredData = [];
-// - chart attributes
+// - chart fields set as axis
 Cloudvisio.prototype._axis = {};
-// - chart attributes
+// - the last selected field
 Cloudvisio.prototype._selectedField = false;
-
+// - saving queries
+Cloudvisio.prototype._queries = {};
 
 Cloudvisio.prototype._axisSchema = function( schema ){
 	// reset axis
@@ -241,14 +298,6 @@ Cloudvisio.prototype._axisSchema = function( schema ){
 		this._axis[i] = false;
 	}
 };
-
-// return the matches of a regular expression
-Cloudvisio.prototype._find = function( query, string ){
-	if( query instanceof Array) query = query.join("|");
-	var regexp = new RegExp(query, "gi");
-	return string.match(regexp);
-};
-
 
 
 Cloudvisio.prototype.process = function( key, value ) {
@@ -336,6 +385,17 @@ Cloudvisio.prototype.search = function( string, options ){
 
 // lookup a value in a field
 Cloudvisio.prototype.find = function( query, options ){
+	//
+	options = options || {};
+	if( typeof query == "boolean" ) {
+		this.match( query, options );
+	} else {
+		// a find() always resets the axis?
+		this.search( query, options );
+	}
+	// allow method chaining
+	return this;
+	/*
 	options = options || {};
 	// exit now if theres no selected field
 	if( !this._selectedField ) return;
@@ -347,6 +407,7 @@ Cloudvisio.prototype.find = function( query, options ){
 	this.group( [query], field, options);
 	// allow method chaining
 	return this;
+	*/
 };
 
 
@@ -442,28 +503,62 @@ Cloudvisio.prototype.group = function( groups, key, options){
 
 // Internal methods
 
+// Return the matches of a regular expression
+Cloudvisio.prototype._find = function( query, string ){
+	if( query instanceof Array) query = query.join("|");
+	var regexp = new RegExp(query, "gi");
+	return string.match(regexp);
+};
+
+
 // Applying a filter based on an regulat expression
 Cloudvisio.prototype._filterString = function( string, options ){
 	//
 	options = options || {};
 	var field = this._selectedField || options.field || false;
+	var id;
 	// exit now if theres no selected field
 	if( !field ) return;
 	// check if the query is a number
-	if(typeof string != "string") return;
+	//if(typeof string != "string") return;
 	// get the data
 	var data = this.data();
-	// reset filtered data - should be part of data()?
-	this._filteredData = [];
+	if( options.filter ){
+		// reset filtered data - should be part of data()?
+		this._filteredData = [];
+	} else {
+		// create a new field for the result;
+		id = "filter_"+ field + "_"+ utils.uid();
+	}
 	//
 	for( var i in data ){
-		if( options.match && data[i][field] === string){
-			this._filteredData.push( data[i] );
+		var opt = {};
+		var result;
+		if( options.match ){
+			result = (data[i][field] === string);
+			if( options.filter ){
+				if( result ) this.data( data[i]);
+			} else {
+				// add a new filter key
+				data[i][id] = result;
+				// update the existing data
+				this.data( data[i], { key : i });
+				// save the query
+				this._queries[id] = string;
+			}
 		}
 		if( options.search ){
 			var exp = new RegExp(string);
-			if( data[i][field].search(exp) > -1 ){
-				this._filteredData.push( data[i] );
+			result = ( data[i][field].search(exp) > -1 );
+			if( options.filter ){
+				if( result ) this.data( data[i]);
+			} else {
+				// add a new filter key
+				data[i][id] = result;
+				// update the existing data
+				this.data( data[i], { key : i });
+				// save the query
+				this._queries[id] = string;
 			}
 		}
 		/*
@@ -1225,7 +1320,6 @@ var utils = {
 		return destination;
 	},
 
-
 	// convert an object to an array (loosing the keys)
 	toArray: function( obj ){
 		var array = [];
@@ -1233,6 +1327,14 @@ var utils = {
 			array.push( obj[i] );
 		}
 		return array;
+	},
+
+	// unique sequential id - based on: http://stackoverflow.com/a/14714979
+	uid: (function(){var id=0;return function(){if(arguments[0]===0)id=0;return id++;};})(),
+
+	// remove all special characters & spaces
+	safeString: function( string ){
+		return string.replace(/[^a-zA-Z0-9]/g,'');
 	}
 
 };
