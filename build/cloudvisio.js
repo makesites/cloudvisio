@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Sat, 08 Jun 2013 11:01:16 GMT)
+// @name cloudvisio - 0.5.0 (Mon, 10 Jun 2013 03:25:37 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -587,7 +587,7 @@ Cloudvisio.prototype._filterString = function( string, options ){
 			}
 		}
 		if( options.search ){
-			var exp = new RegExp(string);
+			var exp = new RegExp(string, "gi");
 			result = ( data[i][field].search(exp) > -1 );
 			if( options.filter ){
 				if( result ) this.data( data[i]);
@@ -1302,7 +1302,11 @@ Cloudvisio.prototype._findType = function( key, data ){
 	data = data || this.models;
 	// loop through models
 	for(var i in data){
-		var itype = (typeof data[i][key] );
+		var value = data[i][key];
+		// #35 check if the value is a float
+		if( !isNaN( parseFloat(value) ) ) value = parseFloat(value);
+		var itype = (typeof value);
+
 		// if we've found more than one types exit
 		if( type && type != itype ) return "mixed";
 		type = itype;
