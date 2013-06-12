@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Wed, 12 Jun 2013 05:50:05 GMT)
+// @name cloudvisio - 0.5.0 (Wed, 12 Jun 2013 06:32:56 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -339,20 +339,18 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 	//
 	options = options || {};
 	var field = this._selectedField || options.field || false;
-	var id;
 	// exit now if theres no selected field
 	if( !field ) return;
 	// check if the query is a number
 	if(typeof number != "number") return;
 	// get the data
 	var data = this.data();
+	// create a new field for the query;
+	var id = "_query_"+ utils.uid();
 	//
 	if( options.filter ){
 		// reset filtered data - should be part of data()?
 		this._filteredData = [];
-	} else {
-		// create a new field for the result;
-		id = "filter_"+ field + "_"+ utils.uid();
 	}
 	//
 	for( var i in data ){
@@ -367,7 +365,7 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 				// update the existing data
 				this.data( data[i], { key : i, silent: true });
 				// save the query
-				this._queries[id] = number;
+				this._queries[id] = { field: field, type: "eq", query: number };
 			}
 		}
 		if( options.lt){
@@ -380,7 +378,7 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 				// update the existing data
 				this.data( data[i], { key : i, silent: true });
 				// save the query
-				this._queries[id] = number;
+				this._queries[id] = { field: field, type: "lt", query: number };
 			}
 		}
 		if( options.gt){
@@ -393,7 +391,7 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 				// update the existing data
 				this.data( data[i], { key : i, silent: true });
 				// save the query
-				this._queries[id] = number;
+				this._queries[id] = { field: field, type: "gt", query: number };
 			}
 		}
 	}
@@ -565,19 +563,18 @@ Cloudvisio.prototype._filterString = function( string, options ){
 	//
 	options = options || {};
 	var field = this._selectedField || options.field || false;
-	var id;
 	// exit now if theres no selected field
 	if( !field ) return;
 	// check if the query is a number
 	//if(typeof string != "string") return;
 	// get the data
 	var data = this.data();
+	// create a new field for the query
+	var id = "_query_"+ field + "_"+ utils.uid();
+	//
 	if( options.filter ){
 		// reset filtered data - should be part of data()?
 		this._filteredData = [];
-	} else {
-		// create a new field for the result;
-		id = "filter_"+ field + "_"+ utils.uid();
 	}
 	//
 	for( var i in data ){
@@ -593,7 +590,7 @@ Cloudvisio.prototype._filterString = function( string, options ){
 				// update the existing data
 				this.data( data[i], { key : i, silent: true });
 				// save the query
-				this._queries[id] = string;
+				this._queries[id] = { field: field, type: "match", query: string };
 			}
 		}
 		if( options.search ){
@@ -607,7 +604,7 @@ Cloudvisio.prototype._filterString = function( string, options ){
 				// update the existing data
 				this.data( data[i], { key : i, silent: true });
 				// save the query
-				this._queries[id] = string;
+				this._queries[id] = { field: field, type: "search", query: string };
 			}
 		}
 		/*
