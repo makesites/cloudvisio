@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Wed, 12 Jun 2013 05:25:59 GMT)
+// @name cloudvisio - 0.5.0 (Wed, 12 Jun 2013 05:50:05 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -540,6 +540,16 @@ Cloudvisio.prototype.group = function( groups, key, options){
 };
 
 
+Cloudvisio.prototype.reverse = function(){
+	// set the flag for reference
+	this._reverseQuery = true;
+};
+
+
+// Internal objects
+Cloudvisio.prototype._reverseQuery = false;
+
+
 // Internal methods
 
 // Return the matches of a regular expression
@@ -607,6 +617,9 @@ Cloudvisio.prototype._filterString = function( string, options ){
 		*/
 	}
 };
+
+
+
 
 
 // convert the regular expression into a string
