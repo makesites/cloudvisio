@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Wed, 12 Jun 2013 12:42:07 GMT)
+// @name cloudvisio - 0.5.0 (Wed, 12 Jun 2013 13:22:52 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -82,7 +82,7 @@ Cloudvisio.prototype.data = function( models, options ){
 	// fallbacks
 	options = options || {};
 	// return the existing data if none is passed...
-	if ( !arguments.length ) return this._data;
+	if ( !arguments.length || (models === null && options.raw) ) return this._data;
 	//
 	var data = this._data;
 	// check if the data we're adding is in an array
@@ -369,11 +369,11 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 			type = "gt";
 		}
 		// make the necessary adjustments to the data
-		if( options.exclude && data[i]["__filter"] !== false ){
+		if( options.exclude && data[i].__filter !== false ){
 			// when exluding don't consider the ones already filtered out
-			data[i]["__filter"] = !result;
-		} else if( options.filter && data[i]["__filter"] !== false ){
-			data[i]["__filter"] = result;
+			data[i].__filter = !result;
+		} else if( options.filter && data[i].__filter !== false ){
+			data[i].__filter = result;
 		}
 		// add a new query key
 		data[i][id] = result;
@@ -578,16 +578,17 @@ Cloudvisio.prototype._filterString = function( string, options ){
 			type = "search";
 		}
 		// make the necessary adjustments to the data
-		if( options.exclude && data[i]["__filter"] !== false ){
+		if( options.exclude && data[i].__filter !== false ){
 			// when exluding don't consider the ones already filtered out
-			data[i]["__filter"] = !result;
-		} else if( options.filter && data[i]["__filter"] !== false ){
-			data[i]["__filter"] = result;
+			data[i].__filter = !result;
+		} else if( options.filter && data[i].__filter !== false ){
+			data[i].__filter = result;
 		}
 		// add a new query key
 		data[i][id] = result;
 		//
 		opt.key = i;
+		//opt.filter = true;
 		// update the existing data
 		this.data( data[i], opt);
 		// save the query
