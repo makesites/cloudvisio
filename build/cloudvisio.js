@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Wed, 12 Jun 2013 10:58:50 GMT)
+// @name cloudvisio - 0.5.0 (Wed, 12 Jun 2013 12:42:07 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -81,10 +81,8 @@ Cloudvisio.prototype.models = [];
 Cloudvisio.prototype.data = function( models, options ){
 	// fallbacks
 	options = options || {};
-	// when does data work as an output
-	var output = ( !arguments.length || (models === null && options != {}) );
 	// return the existing data if none is passed...
-	if (output) return ( options.raw || !this._filteredData.length ) ? this._data : this._filteredData;
+	if ( !arguments.length ) return this._data;
 	//
 	var data = this._data;
 	// check if the data we're adding is in an array
@@ -98,15 +96,15 @@ Cloudvisio.prototype.data = function( models, options ){
 	} else if( models instanceof Object) {
 		// all individual imports are silent
 		options.silent = true;
+		//
+		if( options.filter ){
+			models.__filter = true;
+		}
 		// passing the key as an option - better way?
 		if( options.key ){
 			data[options.key] = models;
 		} else {
 			data.push(models);
-		}
-		if( options.filter ){
-			// assume the data is not in the filtered array or use:  && !utils.inArray(models, this._filteredData)
-			this._filteredData.push(models);
 		}
 	} else {
 		// nothing else supported for now
@@ -350,64 +348,42 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 	// get the data
 	var data = this.data(null, { raw : true });
 	// create a new field for the query;
-	var id = "_query_"+ utils.uid();
-	//
-	if( options.filter ){
-		// reset filtered data - should be part of data()?
-		this._filteredData = [];
-	}
+	var id = "__query_"+ utils.uid();
 	//
 	for( var i in data ){
 		var opt = {
 			silent: true,
 			filter: options.filter
 		};
-		var result;
+		var result, type;
 		if( options.eq){
 			result = (data[i][field] === number);
-			if( options.filter ){
-				if( result ) this.data( data[i], opt);
-			} else {
-				// add a new filter key
-				data[i][id] = result;
-				//
-				opt.key = i;
-				// update the existing data
-				this.data( data[i], opt);
-				// save the query
-				this._queries[id] = { field: field, type: "eq", query: number };
-			}
+			type = "eq";
 		}
 		if( options.lt){
 			result = (data[i][field] < number);
-			if( options.filter ){
-				if( result ) this.data( data[i], opt);
-			} else {
-				// add a new filter key
-				data[i][id] = result;
-				//
-				opt.key = i;
-				// update the existing data
-				this.data( data[i], opt);
-				// save the query
-				this._queries[id] = { field: field, type: "lt", query: number };
-			}
+			type = "lt";
 		}
 		if( options.gt){
 			result = (data[i][field] > number);
-			if( options.filter ){
-				if( result ) this.data( data[i], opt);
-			} else {
-				// add a new filter key
-				data[i][id] = result;
-				//
-				opt.key = i;
-				// update the existing data
-				this.data( data[i], opt);
-				// save the query
-				this._queries[id] = { field: field, type: "gt", query: number };
-			}
+			type = "gt";
 		}
+		// make the necessary adjustments to the data
+		if( options.exclude && data[i]["__filter"] !== false ){
+			// when exluding don't consider the ones already filtered out
+			data[i]["__filter"] = !result;
+		} else if( options.filter && data[i]["__filter"] !== false ){
+			data[i]["__filter"] = result;
+		}
+		// add a new query key
+		data[i][id] = result;
+		//
+		opt.key = i;
+		// update the existing data
+		this.data( data[i], opt);
+		// save the query
+		this._queries[id] = { field: field, type: type, query: number };
+
 	}
 
 };
@@ -584,55 +560,38 @@ Cloudvisio.prototype._filterString = function( string, options ){
 	// get the data
 	var data = this.data(null, { raw : true });
 	// create a new field for the query
-	var id = "_query_"+ utils.uid();
-	//
-	if( options.filter ){
-		// reset filtered data - should be part of data()?
-		this._filteredData = [];
-	}
+	var id = "__query_"+ utils.uid();
 	//
 	for( var i in data ){
 		var opt = {
 			silent: true,
 			filter: options.filter
 		};
-		var result;
+		var result, type;
 		if( options.match ){
 			result = (data[i][field] === string);
-			if( options.filter ){
-				if( result ) this.data( data[i], opt);
-			} else {
-				// add a new filter key
-				data[i][id] = result;
-				//
-				opt.key = i;
-				// update the existing data
-				this.data( data[i], opt);
-				// save the query
-				this._queries[id] = { field: field, type: "match", query: string };
-			}
+			type = "match";
 		}
 		if( options.search ){
 			var exp = new RegExp(string, "gi");
 			result = ( data[i][field].search(exp) > -1 );
-			if( options.filter ){
-				if( result ) this.data( data[i], opt);
-			} else {
-				// add a new filter key
-				data[i][id] = result;
-				//
-				opt.key = i;
-				// update the existing data
-				this.data( data[i], opt);
-				// save the query
-				this._queries[id] = { field: field, type: "search", query: string };
-			}
+			type = "search";
 		}
-		/*
-		if( options.gt && data[i][field] > number){
-			this._filteredData.push( data[i] );
+		// make the necessary adjustments to the data
+		if( options.exclude && data[i]["__filter"] !== false ){
+			// when exluding don't consider the ones already filtered out
+			data[i]["__filter"] = !result;
+		} else if( options.filter && data[i]["__filter"] !== false ){
+			data[i]["__filter"] = result;
 		}
-		*/
+		// add a new query key
+		data[i][id] = result;
+		//
+		opt.key = i;
+		// update the existing data
+		this.data( data[i], opt);
+		// save the query
+		this._queries[id] = { field: field, type: type, query: string };
 	}
 };
 
@@ -1407,10 +1366,10 @@ var utils = {
 	inArray: function( obj, list ){
 		for (var i = 0; i < list.length; i++) {
 			if (list[i] === obj) {
-				return true;
+				return i;
 			}
 		}
-		return false;
+		return -1;
 	},
 
 	// unique sequential id - based on: http://stackoverflow.com/a/14714979
