@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Mon, 10 Jun 2013 03:25:37 GMT)
+// @name cloudvisio - 0.5.0 (Wed, 12 Jun 2013 05:25:59 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -360,12 +360,12 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 		if( options.eq){
 			result = (data[i][field] === number);
 			if( options.filter ){
-				if( result ) this.data( data[i]);
+				if( result ) this.data( data[i], { silent: true });
 			} else {
 				// add a new filter key
 				data[i][id] = result;
 				// update the existing data
-				this.data( data[i], { key : i });
+				this.data( data[i], { key : i, silent: true });
 				// save the query
 				this._queries[id] = number;
 			}
@@ -373,12 +373,12 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 		if( options.lt){
 			result = (data[i][field] < number);
 			if( options.filter ){
-				if( result ) this.data( data[i]);
+				if( result ) this.data( data[i], { silent: true });
 			} else {
 				// add a new filter key
 				data[i][id] = result;
 				// update the existing data
-				this.data( data[i], { key : i });
+				this.data( data[i], { key : i, silent: true });
 				// save the query
 				this._queries[id] = number;
 			}
@@ -386,12 +386,12 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 		if( options.gt){
 			result = (data[i][field] > number);
 			if( options.filter ){
-				if( result ) this.data( data[i]);
+				if( result ) this.data( data[i], { silent: true });
 			} else {
 				// add a new filter key
 				data[i][id] = result;
 				// update the existing data
-				this.data( data[i], { key : i });
+				this.data( data[i], { key : i, silent: true });
 				// save the query
 				this._queries[id] = number;
 			}
@@ -576,12 +576,12 @@ Cloudvisio.prototype._filterString = function( string, options ){
 		if( options.match ){
 			result = (data[i][field] === string);
 			if( options.filter ){
-				if( result ) this.data( data[i]);
+				if( result ) this.data( data[i], { silent: true });
 			} else {
 				// add a new filter key
 				data[i][id] = result;
 				// update the existing data
-				this.data( data[i], { key : i });
+				this.data( data[i], { key : i, silent: true });
 				// save the query
 				this._queries[id] = string;
 			}
@@ -590,12 +590,12 @@ Cloudvisio.prototype._filterString = function( string, options ){
 			var exp = new RegExp(string, "gi");
 			result = ( data[i][field].search(exp) > -1 );
 			if( options.filter ){
-				if( result ) this.data( data[i]);
+				if( result ) this.data( data[i], { silent: true });
 			} else {
 				// add a new filter key
 				data[i][id] = result;
 				// update the existing data
-				this.data( data[i], { key : i });
+				this.data( data[i], { key : i, silent: true });
 				// save the query
 				this._queries[id] = string;
 			}
