@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Thu, 13 Jun 2013 09:42:15 GMT)
+// @name cloudvisio - 0.5.0 (Thu, 13 Jun 2013 10:33:10 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -226,6 +226,19 @@ Cloudvisio.prototype.select = function( field ){
 	return this;
 };
 
+// set or retrieve the queries applied
+Cloudvisio.prototype.queries = function( query ){
+	if (!arguments.length) return this._queries;
+	// get a query if given string
+	if(typeof query == "string") return this._queries[ query ];
+	// set a query if given object
+	// create a new field for the query
+	var id = "__query_"+ utils.uid();
+	this._queries[id] = query;
+	// return the id for further use...
+	return id;
+};
+
 // calculate axis based on the queries
 Cloudvisio.prototype.amount = function( options ){
 	// fallback
@@ -349,8 +362,6 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 	if(typeof number != "number") return;
 	// get the data
 	var data = this.data(null, { raw : true });
-	// create a new field for the query;
-	var id = "__query_"+ utils.uid();
 	//
 	for( var i in data ){
 		var opt = {
@@ -377,15 +388,14 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 		} else if( options.filter && data[i].__filter !== false ){
 			data[i].__filter = result;
 		}
+		// create a new query
+		var id = { field: field, type: type, query: number };
 		// add a new query key
 		data[i][id] = result;
 		//
 		opt.key = i;
 		// update the existing data
 		this.data( data[i], opt);
-		// save the query
-		this._queries[id] = { field: field, type: type, query: number };
-
 	}
 
 };
@@ -561,8 +571,6 @@ Cloudvisio.prototype._filterString = function( string, options ){
 	//if(typeof string != "string") return;
 	// get the data
 	var data = this.data(null, { raw : true });
-	// create a new field for the query
-	var id = "__query_"+ utils.uid();
 	//
 	for( var i in data ){
 		var opt = {
@@ -586,6 +594,8 @@ Cloudvisio.prototype._filterString = function( string, options ){
 		} else if( options.filter && data[i].__filter !== false ){
 			data[i].__filter = result;
 		}
+		// create a new query
+		var id = this.queries({ field: field, type: type, query: string });
 		// add a new query key
 		data[i][id] = result;
 		//
@@ -593,14 +603,9 @@ Cloudvisio.prototype._filterString = function( string, options ){
 		//opt.filter = true;
 		// update the existing data
 		this.data( data[i], opt);
-		// save the query
-		this._queries[id] = { field: field, type: type, query: string };
 	}
+
 };
-
-
-
-
 
 // convert the regular expression into a string
 Cloudvisio.prototype.verbalize = function( query ){
