@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Wed, 12 Jun 2013 13:22:52 GMT)
+// @name cloudvisio - 0.5.0 (Thu, 13 Jun 2013 09:42:15 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -228,6 +228,8 @@ Cloudvisio.prototype.select = function( field ){
 
 // calculate axis based on the queries
 Cloudvisio.prototype.amount = function( options ){
+	// fallback
+	options = options || {};
 	// get the (active) data
 	var data = this.data();
 	// also reset models?
@@ -578,7 +580,7 @@ Cloudvisio.prototype._filterString = function( string, options ){
 			type = "search";
 		}
 		// make the necessary adjustments to the data
-		if( options.exclude && data[i].__filter !== false ){
+		if( options.exclude && result && data[i].__filter !== false ){
 			// when exluding don't consider the ones already filtered out
 			data[i].__filter = !result;
 		} else if( options.filter && data[i].__filter !== false ){
