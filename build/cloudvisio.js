@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Fri, 14 Jun 2013 09:10:40 GMT)
+// @name cloudvisio - 0.5.0 (Fri, 14 Jun 2013 12:55:12 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -398,29 +398,33 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 	// exit now if theres no selected field
 	if( !field ) return;
 	// check if the query is a number
-	if(typeof number != "number") return;
+	if(isNaN(number)) return;
+	// in case of a string
+	number = parseFloat(number);
 	// get the data
 	var data = this.data(null, { raw : true });
 	// create a new query
-	var id = { field: field, type: type, query: number };
+	var type = null;
+	if( options.eq) type = "eq";
+	if( options.lt) type = "lt";
+	if( options.gt) type = "gt";
+	//
+	var id = this.queries({ field: field, type: type, query: number });
 	//
 	for( var i in data ){
 		var opt = {
 			silent: true,
 			filter: options.filter
 		};
-		var result, type;
+		var result;
 		if( options.eq){
 			result = (data[i][field] === number);
-			type = "eq";
 		}
 		if( options.lt){
 			result = (data[i][field] < number);
-			type = "lt";
 		}
 		if( options.gt){
 			result = (data[i][field] > number);
-			type = "gt";
 		}
 		// make the necessary adjustments to the data
 		if( options.exclude && data[i].__filter !== false ){
@@ -623,6 +627,10 @@ Cloudvisio.prototype._filterString = function( string, options ){
 	//if(typeof string != "string") return;
 	// get the data
 	var data = this.data(null, { raw : true });
+	//
+	var type;
+	if( options.match ) type = "match";
+	if( options.search ) type = "search";
 	// create a new query
 	var id = this.queries({ field: field, type: type, query: string });
 	//
@@ -631,15 +639,13 @@ Cloudvisio.prototype._filterString = function( string, options ){
 			silent: true,
 			filter: options.filter
 		};
-		var result, type;
+		var result;
 		if( options.match ){
 			result = (data[i][field] === string);
-			type = "match";
 		}
 		if( options.search ){
 			var exp = new RegExp(string, "gi");
 			result = ( data[i][field].search(exp) > -1 );
-			type = "search";
 		}
 		// make the necessary adjustments to the data
 		if( options.exclude && result && data[i].__filter !== false ){
