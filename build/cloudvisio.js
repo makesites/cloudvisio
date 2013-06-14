@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Fri, 14 Jun 2013 06:20:07 GMT)
+// @name cloudvisio - 0.5.0 (Fri, 14 Jun 2013 09:10:40 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -401,6 +401,8 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 	if(typeof number != "number") return;
 	// get the data
 	var data = this.data(null, { raw : true });
+	// create a new query
+	var id = { field: field, type: type, query: number };
 	//
 	for( var i in data ){
 		var opt = {
@@ -427,8 +429,6 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 		} else if( options.filter && data[i].__filter !== false ){
 			data[i].__filter = result;
 		}
-		// create a new query
-		var id = { field: field, type: type, query: number };
 		// add a new query key
 		data[i][id] = result;
 		//
@@ -623,6 +623,8 @@ Cloudvisio.prototype._filterString = function( string, options ){
 	//if(typeof string != "string") return;
 	// get the data
 	var data = this.data(null, { raw : true });
+	// create a new query
+	var id = this.queries({ field: field, type: type, query: string });
 	//
 	for( var i in data ){
 		var opt = {
@@ -646,8 +648,6 @@ Cloudvisio.prototype._filterString = function( string, options ){
 		} else if( options.filter && data[i].__filter !== false ){
 			data[i].__filter = result;
 		}
-		// create a new query
-		var id = this.queries({ field: field, type: type, query: string });
 		// add a new query key
 		data[i][id] = result;
 		//
