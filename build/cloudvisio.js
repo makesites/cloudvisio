@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Fri, 14 Jun 2013 04:53:55 GMT)
+// @name cloudvisio - 0.5.0 (Fri, 14 Jun 2013 05:19:17 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -237,7 +237,7 @@ Cloudvisio.prototype.queries = function( query, options ){
 	for( var i in queries ){
 		// check if query exists first?
 		// create a new field for the query
-		id = "__query_"+ utils.uid();
+		id = (query.id) ? query.id : "__query_"+ utils.uid();
 		this._queries[id] = query;
 	}
 	// return the id if entering one query
