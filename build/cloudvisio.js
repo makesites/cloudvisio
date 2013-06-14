@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Fri, 14 Jun 2013 05:57:05 GMT)
+// @name cloudvisio - 0.5.0 (Fri, 14 Jun 2013 06:20:07 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -583,6 +583,19 @@ Cloudvisio.prototype.reverse = function(){
 	// set the flag for reference
 	this._reverseQuery = true;
 };
+
+// check if a query is there
+Cloudvisio.prototype.inQueries = function( q ){
+	var id = false;
+	for( var i in this._queries ){
+		// check all fields for a match
+		if( this._queries[i].field == q.field && this._queries[i].type == q.type && this._queries[i].query == q.query ){
+			id = i;
+		}
+	}
+	return id;
+};
+
 
 
 // Internal objects
