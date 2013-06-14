@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Thu, 13 Jun 2013 10:33:10 GMT)
+// @name cloudvisio - 0.5.0 (Fri, 14 Jun 2013 04:53:55 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -227,16 +227,21 @@ Cloudvisio.prototype.select = function( field ){
 };
 
 // set or retrieve the queries applied
-Cloudvisio.prototype.queries = function( query ){
+Cloudvisio.prototype.queries = function( query, options ){
 	if (!arguments.length) return this._queries;
 	// get a query if given string
 	if(typeof query == "string") return this._queries[ query ];
 	// set a query if given object
-	// create a new field for the query
-	var id = "__query_"+ utils.uid();
-	this._queries[id] = query;
-	// return the id for further use...
-	return id;
+	var queries = (query instanceof Array) ? query : [query];
+	var id;
+	for( var i in queries ){
+		// check if query exists first?
+		// create a new field for the query
+		id = "__query_"+ utils.uid();
+		this._queries[id] = query;
+	}
+	// return the id if entering one query
+	return (query instanceof Array) ? this : id;
 };
 
 // calculate axis based on the queries
