@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Sat, 15 Jun 2013 09:39:05 GMT)
+// @name cloudvisio - 0.5.0 (Sat, 15 Jun 2013 11:49:59 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -237,8 +237,9 @@ Cloudvisio.prototype.queries = function( query, options ){
 	for( var i in queries ){
 		// check if query exists first?
 		// create a new field for the query
-		id = (query.id) ? query.id : "__query_"+ utils.uid();
-		this._queries[id] = query;
+		id = (queries[i].id) ? queries[i].id : "__query_"+ utils.uid();
+		// insert selected data (field, type, query )
+		this._queries[id] = { field: queries[i].field, type: queries[i].type, query: queries[i].query };
 	}
 	// return the id if entering one query
 	return (query instanceof Array) ? this : id;
