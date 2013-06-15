@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Fri, 14 Jun 2013 12:55:12 GMT)
+// @name cloudvisio - 0.5.0 (Sat, 15 Jun 2013 09:39:05 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -289,19 +289,18 @@ Cloudvisio.prototype.remove = function( string, options ){
 	if( !options.type ){
 		// check in the axis
 		axis = utils.inArray( string, this._axis );
-		query = utils.inArray( string, this._queries );
+		query = Object.keys(this._queries).indexOf( string );
 		// an axis is also a query...
-		if( query ) options.type = "query";
-		if( axis ) options.type = "axis";
+		if( query > -1 ) options.type = "query";
+		if( axis > -1 ) options.type = "axis";
 	}
+
 	// if we didn't find anything exit
 	if( !options.type ) return this;
 
 	if( options.type == "query" ){
 		// remove the query entry
-		delete this._queries[query];
-		// remove the axis entry (if any)
-		if( axis ) this._axis[axis] = false;
+		delete this._queries[string];
 		// remove any reference in the data
 		for( var i in this._data ){
 			delete this._data[i][string];
@@ -310,7 +309,7 @@ Cloudvisio.prototype.remove = function( string, options ){
 
 	if( options.type == "axis" ){
 		// remove the axis entry
-		this._axis[axis] = false;
+		this._axis[string] = false;
 		// remove the data
 		for( var j in this.models ){
 			var model = this.models[j];
@@ -648,7 +647,7 @@ Cloudvisio.prototype._filterString = function( string, options ){
 			result = ( data[i][field].search(exp) > -1 );
 		}
 		// make the necessary adjustments to the data
-		if( options.exclude && result && data[i].__filter !== false ){
+		if( options.exclude && data[i].__filter !== false ){
 			// when exluding don't consider the ones already filtered out
 			data[i].__filter = !result;
 		} else if( options.filter && data[i].__filter !== false ){
