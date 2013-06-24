@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Sat, 15 Jun 2013 13:45:44 GMT)
+// @name cloudvisio - 0.5.0 (Mon, 24 Jun 2013 22:44:23 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -71,6 +71,12 @@ Cloudvisio.prototype.set = function( obj ){
 
 	//
 	return this;
+};
+
+// retrieving options
+Cloudvisio.prototype.get = function( key ){
+	//
+	return this.options[key] || false;
 };
 
 
@@ -165,7 +171,8 @@ Cloudvisio.prototype.keys = function( data ){
 // set an axis key (or return the whole array
 Cloudvisio.prototype.axis = function( key, value ){
 	// return the existing data if none is passed...
-	if (!arguments.length) return Object.keys( this.models[0] || {} );
+	//if (!arguments.length) return Object.keys( this.models[0] || {} );
+	if (!arguments.length) return this._axis;
 	// #24 if key is an object loop through options
 	if( key instanceof Object ){
 		for( var k in key ){
