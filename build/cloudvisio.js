@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Thu, 04 Jul 2013 06:34:10 GMT)
+// @name cloudvisio - 0.5.0 (Thu, 04 Jul 2013 06:58:26 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -235,25 +235,6 @@ Cloudvisio.prototype.select = function( field ){
 	return this;
 };
 
-// set or retrieve the queries applied
-Cloudvisio.prototype.queries = function( query, options ){
-	if (!arguments.length) return this._queries;
-	// get a query if given string
-	if(typeof query == "string") return this._queries[ query ];
-	// set a query if given object
-	var queries = (query instanceof Array) ? query : [query];
-	var id;
-	for( var i in queries ){
-		// check if query exists first?
-		// create a new field for the query
-		id = (queries[i].id) ? queries[i].id : this._queryId();
-		// insert selected data (field, type, query )
-		this._queries[id] = { field: queries[i].field, type: queries[i].type, query: queries[i].query };
-	}
-	// return the id if entering one query
-	return (query instanceof Array) ? this : id;
-};
-
 // calculate axis based on the queries
 Cloudvisio.prototype.amount = function( options ){
 	// fallback
@@ -363,8 +344,6 @@ Cloudvisio.prototype._filteredData = [];
 Cloudvisio.prototype._axis = {};
 // - the last selected field
 Cloudvisio.prototype._selectedField = false;
-// - saving queries
-Cloudvisio.prototype._queries = {};
 
 Cloudvisio.prototype._axisSchema = function( schema ){
 	// reset axis
@@ -373,6 +352,44 @@ Cloudvisio.prototype._axisSchema = function( schema ){
 		this._axis[i] = false;
 	}
 };
+
+
+// set or retrieve the queries applied
+Cloudvisio.prototype.queries = function( query, options ){
+	if (!arguments.length) return this._queries;
+	// get a query if given string
+	if(typeof query == "string") return this._queries[ query ];
+	// set a query if given object
+	var queries = (query instanceof Array) ? query : [query];
+	var id;
+	for( var i in queries ){
+		// check if query exists first?
+		// create a new field for the query
+		id = (queries[i].id) ? queries[i].id : this._queryId();
+		// insert selected data (field, type, query )
+		this._queries[id] = { field: queries[i].field, type: queries[i].type, query: queries[i].query };
+	}
+	// return the id if entering one query
+	return (query instanceof Array) ? this : id;
+};
+
+// refresh results of queries
+Cloudvisio.prototype.refresh = function(){
+	// variables
+	var queries = this.queries;
+	// discart filter?
+	// loop through queries
+	for(var i in queries){
+		//
+	}
+};
+
+
+// Internal
+
+// - saving queries
+Cloudvisio.prototype._queries = {};
+
 
 Cloudvisio.prototype._queryId = function(){
 	var prefix = "__query_";
