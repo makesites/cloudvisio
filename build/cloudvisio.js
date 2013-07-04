@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Thu, 04 Jul 2013 06:58:26 GMT)
+// @name cloudvisio - 0.5.0 (Thu, 04 Jul 2013 08:14:32 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -357,6 +357,11 @@ Cloudvisio.prototype._axisSchema = function( schema ){
 // set or retrieve the queries applied
 Cloudvisio.prototype.queries = function( query, options ){
 	if (!arguments.length) return this._queries;
+	// fallbacks
+	query = query || false;
+	options = options || {};
+	// exit now if there; sno query
+	if( !query ) return this;
 	// get a query if given string
 	if(typeof query == "string") return this._queries[ query ];
 	// set a query if given object
@@ -366,8 +371,19 @@ Cloudvisio.prototype.queries = function( query, options ){
 		// check if query exists first?
 		// create a new field for the query
 		id = (queries[i].id) ? queries[i].id : this._queryId();
+		// get the sort if not set (this could also be done in _filterString, _filterNumber)
+		if( queries[i].sort == "undefined"){
+			//
+			if( options.exclude ){
+				queries[i].sort = "exclude";
+			}else if( options.filter ){
+				queries[i].sort = "filter";
+			} else {
+				queries[i].sort = "group";
+			}
+		}
 		// insert selected data (field, type, query )
-		this._queries[id] = { field: queries[i].field, type: queries[i].type, query: queries[i].query };
+		this._queries[id] = { field: queries[i].field, type: queries[i].type, query: queries[i].query, sort: queries[i].sort };
 	}
 	// return the id if entering one query
 	return (query instanceof Array) ? this : id;
@@ -456,7 +472,7 @@ Cloudvisio.prototype._filterNumber = function( number, options ){
 	if( options.lt) type = "lt";
 	if( options.gt) type = "gt";
 	//
-	var id = this.queries({ field: field, type: type, query: number });
+	var id = this.queries({ field: field, type: type, query: number }, options);
 	//
 	for( var i in data ){
 		var opt = {
@@ -681,7 +697,7 @@ Cloudvisio.prototype._filterString = function( string, options ){
 	if( options.match ) type = "match";
 	if( options.search ) type = "search";
 	// create a new query
-	var id = this.queries({ field: field, type: type, query: string });
+	var id = this.queries({ field: field, type: type, query: string }, options);
 	//
 	for( var i in data ){
 		var opt = {
