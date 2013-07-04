@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Mon, 24 Jun 2013 22:44:23 GMT)
+// @name cloudvisio - 0.5.0 (Thu, 04 Jul 2013 06:34:10 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -31,6 +31,8 @@ Cloudvisio = function( options ){
 	//this.options = utils.extend( this.options, options );
 	this.set( options );
 
+	// allow method chaining
+	return this;
 };
 
 Cloudvisio.prototype = {
@@ -292,6 +294,8 @@ Cloudvisio.prototype.amount = function( options ){
 	this._axis.label = "label";
 	this._axis.value = "value";
 
+	// allow method chaining
+	return this;
 };
 
 // removing axis
@@ -612,6 +616,8 @@ Cloudvisio.prototype.group = function( groups, key, options){
 Cloudvisio.prototype.reverse = function(){
 	// set the flag for reference
 	this._reverseQuery = true;
+	// allow method chaining
+	return this;
 };
 
 // check if a query is there
