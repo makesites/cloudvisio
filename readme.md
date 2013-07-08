@@ -85,7 +85,11 @@ Add a normalized dataset ( with pre-calculated axis ) to the models.
 
 Update the visualization's options dynamically. Accepts an object of updated values. 
 
-### group([array], axis)
+### queries( query )
+
+Apply a query on the data with either filter, exclude or group sorting. 
+
+### group([array], axis) _deprecated_
 
 Use an axis as a basis to group the parsed models into groups, with their labels specified in the array.
 
