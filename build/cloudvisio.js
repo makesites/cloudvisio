@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Mon, 08 Jul 2013 03:07:57 GMT)
+// @name cloudvisio - 0.5.0 (Mon, 08 Jul 2013 05:25:44 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -90,7 +90,7 @@ Cloudvisio.prototype.data = function( models, options ){
 	// fallbacks
 	options = options || {};
 	// return the existing data if none is passed...
-	if ( !arguments.length || (models === null && options.raw) ) return this._data;
+	if ( !arguments.length || models === null ) return ( options.raw ) ? this._data : this._filteredData();
 	//
 	var data = this._data;
 	// check if the data we're adding is in an array
@@ -105,9 +105,9 @@ Cloudvisio.prototype.data = function( models, options ){
 		// all individual imports are silent
 		options.silent = true;
 		//
-		if( options.filter ){
-			models.__filter = true;
-		}
+		//if( options.filter ){
+		//	models.__filter = true;
+		//}
 		// passing the key as an option - better way?
 		if( options.key ){
 			data[options.key] = models;
@@ -130,6 +130,18 @@ Cloudvisio.prototype.data = function( models, options ){
 
 	// allow method chaining
 	return this;
+};
+
+// return filtered data
+Cloudvisio.prototype._filteredData = function(){
+	var data = [];
+	for(var i in this._data ){
+		// if filter is not set yet this is pass-through
+		if( typeof this._data[i].__filter == "undefined" || this._data[i].__filter ){
+			data.push( this._data[i] );
+		}
+	}
+	return data;
 };
 
 // load a dataset
@@ -306,10 +318,10 @@ Cloudvisio.prototype.remove = function( string, options ){
 		// remove any reference in the data
 		for( var i in this._data ){
 			delete this._data[i][string];
-		}
-		// remove the filter flag if query type of filter/exclude or the last query
-		if( q.sort =="filter" || q.sort =="exclude" || !this._queries.length ){
-			delete this._data[i].__filter;
+			// remove the filter flag if query type of filter/exclude or the last query
+			if( q.sort =="filter" || q.sort =="exclude" || !this._queries.length ){
+				delete this._data[i].__filter;
+			}
 		}
 	}
 
@@ -343,8 +355,6 @@ Cloudvisio.prototype.type = function( key, options ){
 // Internal
 // - raw data container
 Cloudvisio.prototype._data = [];
-// - filtered data
-Cloudvisio.prototype._filteredData = [];
 // - chart fields set as axis
 Cloudvisio.prototype._axis = {};
 // - the last selected field
