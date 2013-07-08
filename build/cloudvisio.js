@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Thu, 04 Jul 2013 08:14:32 GMT)
+// @name cloudvisio - 0.5.0 (Mon, 08 Jul 2013 03:07:57 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -300,11 +300,16 @@ Cloudvisio.prototype.remove = function( string, options ){
 	if( !options.type ) return this;
 
 	if( options.type == "query" ){
+		var q = this._queries[string];
 		// remove the query entry
 		delete this._queries[string];
 		// remove any reference in the data
 		for( var i in this._data ){
 			delete this._data[i][string];
+		}
+		// remove the filter flag if query type of filter/exclude or the last query
+		if( q.sort =="filter" || q.sort =="exclude" || !this._queries.length ){
+			delete this._data[i].__filter;
 		}
 	}
 
@@ -372,7 +377,7 @@ Cloudvisio.prototype.queries = function( query, options ){
 		// create a new field for the query
 		id = (queries[i].id) ? queries[i].id : this._queryId();
 		// get the sort if not set (this could also be done in _filterString, _filterNumber)
-		if( queries[i].sort == "undefined"){
+		if( typeof queries[i].sort == "undefined"){
 			//
 			if( options.exclude ){
 				queries[i].sort = "exclude";
@@ -397,6 +402,7 @@ Cloudvisio.prototype.refresh = function(){
 	// loop through queries
 	for(var i in queries){
 		//
+		this.queries(queries[i]);
 	}
 };
 
