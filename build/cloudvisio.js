@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.5.0 (Mon, 08 Jul 2013 06:14:06 GMT)
+// @name cloudvisio - 0.6.0 (Mon, 15 Jul 2013 22:43:25 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -173,8 +173,8 @@ Cloudvisio.prototype.keys = function( data ){
 	for(var i in data){
 		var attr = Object.keys(  data[i] );
 		for( var j in attr ){
-			// don't add the same key
-			if( keys.indexOf( attr[j] ) > -1 ) continue;
+			// don't add the same key or queries
+			if( keys.indexOf( attr[j] ) > -1 || attr[j].search(/__query/gi) > -1 ) continue;
 			keys.push( attr[j] );
 		}
 	}
