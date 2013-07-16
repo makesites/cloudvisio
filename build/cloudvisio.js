@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.6.0 (Mon, 15 Jul 2013 22:43:25 GMT)
+// @name cloudvisio - 0.6.0 (Tue, 16 Jul 2013 14:16:09 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -1391,6 +1391,15 @@ Cloudvisio.prototype.ready = function( layout ){
 	return state;
 };
 
+// reset all properties/data
+Cloudvisio.prototype.reset = function( data ){
+	// reset data
+	data = data || false;
+	if( data ) this.data( data, { reset: true });
+	// reset options
+	this.options = defaults;
+
+};
 
 
 // Internal methods
