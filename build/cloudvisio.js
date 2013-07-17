@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.6.0 (Wed, 17 Jul 2013 09:12:45 GMT)
+// @name cloudvisio - 0.6.0 (Wed, 17 Jul 2013 12:30:20 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -620,17 +620,28 @@ Cloudvisio.prototype.group = function(){
 
 	for( var i in data ){
 		// convert any value to string
-		var value = (data[i][key] instanceof Object) ? utils.toArray( data[i][key] ).join("|") : ""+data[i][key]+"";
+		var value = (data[i][key] instanceof Object) ? utils.toArray( data[i][key] ).join(",") : ""+data[i][key]+"";
 		var opt = {
 			silent: true,
 			key: i
 		};
-		//result = this._find(groups, value);
+		var result = this._find( value, groups );
 		// add a new query key
-		data[i][id] = groups.indexOf( value );
+		// are we expecting more than one matches??
+		//if(result instanceof Array) result = result.pop().toLowerCase();
+		data[i][id] = result;
 		// update the existing data
 		this.data( data[i], opt);
 	}
+	// check if the selected layout "needs" a group
+	var axis = this.axis();
+	if( axis.group === false ){
+		// select the query key as the group axis
+		this.axis(id);
+		this._axis.group = id;
+	}
+
+
 	/*
 	// reset models if needed
 	if( options.reset ){
@@ -743,9 +754,22 @@ Cloudvisio.prototype._reverseQuery = false;
 
 // Return the matches of a regular expression
 Cloudvisio.prototype._find = function( query, string ){
-	if( query instanceof Array) query = query.join("|");
-	var regexp = new RegExp(query, "gi");
-	return string.match(regexp);
+	// convert text to lower case
+	string = string.join("|").toLowerCase();
+	query = query.toLowerCase();
+	//
+	var regexp = new RegExp(string, "gi");
+	var matches = query.match(regexp);
+	if(matches === null) return -1;
+	// collapse matches / explode query
+	matches = matches.join(",");
+	string = string.split("|");
+	if( string instanceof Array){
+		// return the index
+		return string.indexOf( matches );
+	}
+	// return the text
+	return matches;
 };
 
 // get a list of the different values
@@ -753,7 +777,7 @@ Cloudvisio.prototype._getValues = function( key, data ){
 	var values = [];
 	for( var i in data ){
 		// convert any value to string
-		var value = (data[i][key] instanceof Object) ? utils.toArray( data[i][key] ).join("|") : ""+data[i][key]+"";
+		var value = (data[i][key] instanceof Object) ? utils.toArray( data[i][key] ).join(",") : ""+data[i][key]+"";
 		var exists = values.indexOf( value ) > -1;
 		if( !exists ) values.push(value);
 	}
