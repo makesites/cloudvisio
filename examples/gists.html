@@ -13,10 +13,10 @@
 var vis;
 
 $(function(){
-	
+
 	vis = new Cloudvisio({
-        layout: "force"
-    });
+		layout: "force"
+	});
 	requestUser();
 });
 
@@ -28,24 +28,24 @@ function requestUser(){
 }
 
 function getData( user ){
-	
+
 	$.getJSON("https://api.github.com/users/"+ user +"/gists?callback=?", function(response){
-		if( response.meta.status == 200 ){ 
+		if( response.meta.status == 200 ){
 			renderGraph( response.data );
 		}
 	});
-	
+
 }
 
 function renderGraph( data ){
-    vis.data( data );
-    console.log( vis.keys() );
-    vis.axis("description");
-    vis.group([true, false], "public");
-    //vis.set({ chart: { radius : 10 } });
-    vis.axis("comments");
-    //vis.gt(0, "comments");
-    vis.render();
+	vis.data( data );
+	console.log( vis.keys() );
+	vis.axis("description");
+	vis.group("public", [true, false]);
+	//vis.set({ chart: { radius : 10 } });
+	vis.axis("comments");
+	//vis.gt(0, "comments");
+	vis.render();
 }
 
 </script>
@@ -56,7 +56,7 @@ function renderGraph( data ){
 	width: 100%;
 	height: 100%;
 }
-    
+
 header {
 	position: absolute;
 	padding: 12px;
@@ -68,17 +68,17 @@ header {
 <body>
 
 <header>
-    <h2>Gists</h2>
-    <p>Grouping a user's public gists sized based on number of comments</p>
-    <pre>
-    vis = new Cloudvisio({
-        layout: "force"
-    });
-    vis.axis("created_at");
-    vis.group([true, false], "public");
-    vis.axis("comments");
-    vis.render();
-    </pre>
+	<h2>Gists</h2>
+	<p>Grouping a user's public gists sized based on number of comments</p>
+	<pre>
+	vis = new Cloudvisio({
+		layout: "force"
+	});
+	vis.axis("created_at");
+	vis.group("public", [true, false]);
+	vis.axis("comments");
+	vis.render();
+	</pre>
 </header>
 
 <div id="vis"><!-- --></div>

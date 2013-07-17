@@ -25,7 +25,7 @@ $(function(){
 		vis.axis("radius", 5);
 		// create a new axis
 		vis.axis("name");
-		vis.group(["high", "Medium", "Low"], "incomeLevel");
+		vis.group("incomeLevel", ["High", "Medium", "Low"]);
 
 		vis.render();
 	});
@@ -70,7 +70,7 @@ header {
 		vis.axis("radius", 5);
 
 		vis.axis("name");
-		vis.group(["high", "Medium", "Low"], "incomeLevel");
+		vis.group("incomeLevel", ["High", "Medium", "Low"]);
 
 		vis.render();
 	});
