@@ -38,12 +38,13 @@ function getData( user ){
 }
 
 function renderGraph( data ){
-	vis.data( data );
-	console.log( vis.keys() );
-	vis.axis("description");
-	vis.group("public", [true, false]);
-	//vis.set({ chart: { radius : 10 } });
-	vis.axis("comments");
+	vis
+	.data( data )
+	.axis("description")
+	.select("public")
+	.group([true, false])
+	.axis("comments");
+
 	//vis.gt(0, "comments");
 	vis.render();
 }
@@ -74,9 +75,14 @@ header {
 	vis = new Cloudvisio({
 		layout: "force"
 	});
-	vis.axis("created_at");
-	vis.group("public", [true, false]);
-	vis.axis("comments");
+
+	vis
+	.data( data )
+	.axis("description");
+	.select("public");
+	.group([true, false]);
+	.axis("comments");
+
 	vis.render();
 	</pre>
 </header>
