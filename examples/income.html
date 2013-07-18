@@ -19,13 +19,13 @@ $(function(){
 	// source: http://api.worldbank.org/countries?format=json&per_page=300&json
 	d3.json("data/income.json", function( data ){
 		//
-		vis.data( data[1] );
-		console.log("available keys: ", vis.keys() );
-		vis.set({ layout: "force" });
-		vis.axis("radius", 5);
-		// create a new axis
-		vis.axis("name");
-		vis.group("incomeLevel", ["High", "Medium", "Low"]);
+		vis
+		.data( data[1] )
+		.set({ layout: "force" })
+		.axis("radius", 5)
+		.axis("name")
+		.select("incomeLevel")
+		.group(["High", "Medium", "Low"]);
 
 		vis.render();
 	});
@@ -64,13 +64,13 @@ header {
 
 	d3.json("data/income.json", function( data ){
 
-		vis.data( data[1] );
-
-		vis.set({ layout: "force" });
-		vis.axis("radius", 5);
-
-		vis.axis("name");
-		vis.group("incomeLevel", ["High", "Medium", "Low"]);
+		vis
+		.data( data[1] )
+		.set({ layout: "force" })
+		.axis("radius", 5)
+		.axis("name")
+		.select("incomeLevel")
+		.group(["High", "Medium", "Low"]);
 
 		vis.render();
 	});
