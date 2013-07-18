@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.6.0 (Thu, 18 Jul 2013 06:27:33 GMT)
+// @name cloudvisio - 0.6.0 (Thu, 18 Jul 2013 14:35:42 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -253,6 +253,9 @@ Cloudvisio.prototype.amount = function( options ){
 	options = options || {};
 	// get the (active) data
 	var data = this.data();
+	var axis = this.axis();
+	// if there are no value axis (available) in the schema exit now
+	if( axis.value !== false ) return;
 	var queries = this.queries();
 	// also reset models?
 	if( options.reset ) {
@@ -263,21 +266,44 @@ Cloudvisio.prototype.amount = function( options ){
 	for(var i in queries ){
 		// don't use filter queries
 		if( queries[i].sort == "filter" || queries[i].sort == "exclude" ) continue;
-
-		var model = {
-			label: "",
-			value: 0
-		};
+		// template
+		var models = {};
 		for(var j in data ){
-			model.value += data[j][i];
-			if( data[j][i] === true ) used++;
+			if(typeof data[j][i] == "boolean"){
+				// skip false state
+				if( data[j][i] === false ) continue;
+				// create empty container
+				if( typeof models[0] == "undefined" ) models[0] = { label: false, value: 0 };
+				// increment value
+				models[0].value +=1;
+				// add label
+				if( !models[0].label && options.labels !== false ){
+					models[0].label = queries[i].query.toString();
+				}
+				used++;
+			} else if(typeof data[j][i] == "number"){
+				// skip false state
+				if( data[j][i] == -1 ) continue;
+				// create empty container
+				if( typeof models[ data[j][i] ] == "undefined" ) models[ data[j][i] ] = { label: false, value: 0 };
+				// increment value
+				models[ data[j][i] ].value += 1;
+				// add label
+				if( !models[ data[j][i] ].label && options.labels !== false ){
+					models[ data[j][i] ].label = queries[i].query[ data[j][i] ].toString();
+				}
+				used++;
+			} else {
+				// what to do with a string?
+			}
 		}
-		// add labels
-		if(options.labels){
-			model.label = queries[i].query.toString();
+		// convert object to array
+		console.log( models );
+		//models = Array.prototype.slice.apply( models );
+		//this.models = this.models.concat( models );
+		for( var g in  models ){
+			this.models.push( models[g] );
 		}
-		// save the query result as a new axis
-		this.models.push(model);
 	}
 	// add another item with the remaining
 	if( used < data.length ){
@@ -1430,6 +1456,10 @@ Cloudvisio.prototype.update = function(){
 
 // verifies that there's the minimum data for a chart
 Cloudvisio.prototype.ready = function( layout ){
+	// fallback (not needed?)
+	//layout = layout || this.options.layout;
+	// process query amounts
+	this.amount();
 	// prerequisite - we need to have some data set...
 	if( this.models.length === 0 ) return false;
 	// main flag
@@ -1438,14 +1468,14 @@ Cloudvisio.prototype.ready = function( layout ){
 	//
 	if(!arguments.length){
 		// evaluate the current layout
-		chart = this._chart;
+		chart = this.chart();
 
 	} else {
 		// keep a reference of the original chart / options
-		original_chart = this._chart;
+		original_chart = this.chart();
 		original_options = this._axis;
 		this.chart( layout );
-		chart = this._chart;
+		chart = this.chart();
 	}
 
 	// check if all the required attributes are set
