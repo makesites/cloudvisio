@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.6.0 (Thu, 18 Jul 2013 14:35:42 GMT)
+// @name cloudvisio - 0.6.0 (Fri, 19 Jul 2013 02:52:30 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -298,7 +298,6 @@ Cloudvisio.prototype.amount = function( options ){
 			}
 		}
 		// convert object to array
-		console.log( models );
 		//models = Array.prototype.slice.apply( models );
 		//this.models = this.models.concat( models );
 		for( var g in  models ){
@@ -404,17 +403,31 @@ Cloudvisio.prototype.queries = function( query, options ){
 	// fallbacks
 	query = query || false;
 	options = options || {};
+	options.restore = options.restore || false;
 	// exit now if there; sno query
 	if( !query ) return this;
 	// get a query if given string
 	if(typeof query == "string") return this._queries[ query ];
+	// check if the query passed is a set of existing queries
+	if(!options.restore && query instanceof Object){
+		for( var q in query ){
+			if( q.search(/__query/gi) > -1 ){
+				// restoring previously set queries
+				options.restore = true;
+			}
+		}
+	}
 	// set a query if given object
-	var queries = (query instanceof Array) ? query : [query];
-	var id;
+	var queries = (options.restore || query instanceof Array) ? query : [query];
+	//
+	var id = false;
 	for( var i in queries ){
 		// check if query exists first?
+		if( options.restore ){
+			id = i;
+		}
 		// create a new field for the query
-		id = (queries[i].id) ? queries[i].id : this._queryId();
+		id = (!id && queries[i].id) ? queries[i].id : this._queryId();
 		// get the sort if not set (this could also be done in _filterString, _filterNumber)
 		if( typeof queries[i].sort == "undefined"){
 			//
@@ -1504,13 +1517,34 @@ Cloudvisio.prototype.ready = function( layout ){
 };
 
 // reset all properties/data
-Cloudvisio.prototype.reset = function( data ){
-	// reset data
+Cloudvisio.prototype.reset = function(){
+	// variables
+	var data, options;
+	// count arguments
+	switch( arguments.length ){
+		case 1:
+			if( arguments[0] instanceof Array ){
+				data = arguments[0];
+			} else {
+				options = arguments[0];
+			}
+		break;
+		default:
+			data = arguments[0];
+			options = arguments[1];
+		break;
+	}
+	// fallbacks
 	data = data || false;
+	options = options || false;
 	if( data ) this.data( data, { reset: true });
 	// reset options
-	this.options = defaults;
-
+	if( options.options !== false ){
+		this.options = defaults;
+	}
+	if( options.models !== false ){
+		this.models = [];
+	}
 };
 
 
