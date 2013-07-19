@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.6.0 (Fri, 19 Jul 2013 02:52:30 GMT)
+// @name cloudvisio - 0.6.0 (Fri, 19 Jul 2013 21:04:47 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -388,14 +388,20 @@ Cloudvisio.prototype._axis = {};
 // - the last selected field
 Cloudvisio.prototype._selectedField = false;
 
+
 Cloudvisio.prototype._axisSchema = function( schema ){
-	// reset axis
-	this._axis = {};
-	for(var i in schema){
-		this._axis[i] = false;
+	// reset axis (conditionally)
+	//this._axis = {};
+	// remove old axis
+	for(var i in this._axis){
+		if(typeof schema[i] == "undefined") delete this._axis[i];
+	}
+	// add new axis
+	for(var j in schema){
+		// preserve existing axis
+		if(typeof this._axis[j] == "undefined") this._axis[j] = false;
 	}
 };
-
 
 // set or retrieve the queries applied
 Cloudvisio.prototype.queries = function( query, options ){
