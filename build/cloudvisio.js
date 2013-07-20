@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.6.0 (Sat, 20 Jul 2013 08:21:13 GMT)
+// @name cloudvisio - 0.6.0 (Sat, 20 Jul 2013 08:39:29 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -398,8 +398,10 @@ Cloudvisio.prototype._axisSchema = function( schema ){
 	}
 	// add new axis
 	for(var j in schema){
+		// get the default value ( if set )
+		var value = ( this.options[j] ) ? this.options[j] : false;
 		// preserve existing axis
-		if(typeof this._axis[j] == "undefined") this._axis[j] = false;
+		if(typeof this._axis[j] == "undefined") this._axis[j] = value;
 	}
 };
 
