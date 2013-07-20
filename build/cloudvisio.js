@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.6.0 (Sat, 20 Jul 2013 08:39:29 GMT)
+// @name cloudvisio - 0.6.0 (Sat, 20 Jul 2013 20:10:26 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -676,14 +676,6 @@ Cloudvisio.prototype.group = function(){
 		// update the existing data
 		this.data( data[i], opt);
 	}
-	// check if the selected layout "needs" a group
-	var axis = this.axis();
-	if( axis.group === false ){
-		// select the query key as the group axis
-		this.axis(id);
-		this._axis.group = id;
-	}
-
 
 	/*
 	// reset models if needed
@@ -1479,6 +1471,8 @@ Cloudvisio.prototype.update = function(){
 Cloudvisio.prototype.ready = function( layout ){
 	// fallback (not needed?)
 	//layout = layout || this.options.layout;
+	// check if the selected layout "needs" a group
+	this._findGroups();
 	// process query amounts
 	this.amount();
 	// prerequisite - we need to have some data set...
@@ -1614,6 +1608,27 @@ Cloudvisio.prototype._findType = function( key, data ){
 	}
 	return type;
 };
+
+// get the type of the selected field
+Cloudvisio.prototype._findGroups = function( key, data ){
+
+	var axis = this.axis();
+	var queries = this.queries();
+	// first see if we have a group "need"
+	if( axis.group === false ){
+		for( var i in queries ){
+		if(queries[i].type == "group"){
+			// select the query key as the group axis
+			this.axis(i);
+			this._axis.group = i;
+			// one group is enough?
+			break;
+		}
+		}
+	}
+
+};
+
 
 // define the color spectrum
 Cloudvisio.prototype.colors = function( colors ){
