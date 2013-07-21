@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.6.0 (Sun, 21 Jul 2013 00:33:00 GMT)
+// @name cloudvisio - 0.6.0 (Sun, 21 Jul 2013 01:33:02 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -152,11 +152,11 @@ Cloudvisio.prototype.parse = function( data ){
 	//if(data instanceof Array){
 	if(data.length != "undefined"){
 		for( var i in data ){
-			this.models.push( data[i] );
+			this.add( data[i] );
 		}
 	} else {
 		// assume one element
-		this.models.push( data );
+		this.add( data );
 	}
 	// setup the axis by checking if the chart is ready
 	this.ready();
@@ -199,7 +199,7 @@ Cloudvisio.prototype.axis = function( key, value ){
 	// lookup the key in the raw data
 	for(var i in data){
 		// create model if necessary
-		if(typeof this.models[i] == "undefined" ) this.models[i] = {};
+		if(typeof this.models[i] == "undefined" ) this.models[i] = { _id: utils.uniqueID() };
 
 		if(typeof value != "undefined"){
 			// if a value is passed just use that
@@ -301,12 +301,12 @@ Cloudvisio.prototype.amount = function( options ){
 		//models = Array.prototype.slice.apply( models );
 		//this.models = this.models.concat( models );
 		for( var g in  models ){
-			this.models.push( models[g] );
+			this.add( models[g] );
 		}
 	}
 	// add another item with the remaining
 	if( used < data.length ){
-		this.models.push({
+		this.add({
 			label: "other",
 			value: data.length - used
 		});
