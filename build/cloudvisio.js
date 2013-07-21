@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.6.0 (Sat, 20 Jul 2013 20:10:26 GMT)
+// @name cloudvisio - 0.6.0 (Sun, 21 Jul 2013 00:33:00 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -1616,15 +1616,19 @@ Cloudvisio.prototype._findGroups = function( key, data ){
 	var queries = this.queries();
 	// first see if we have a group "need"
 	if( axis.group === false ){
+		var match = false;
 		for( var i in queries ){
 		if(queries[i].type == "group"){
 			// select the query key as the group axis
 			this.axis(i);
 			this._axis.group = i;
 			// one group is enough?
+			match = true;
 			break;
 		}
 		}
+		// fallback to unique id
+		if(!match) this._axis.group = "_id";
 	}
 
 };
@@ -1704,6 +1708,18 @@ var utils = {
 	// remove all special characters & spaces
 	safeString: function( string ){
 		return string.replace(/[^a-zA-Z0-9]/g,'');
+	},
+
+	// - Creates a unique id for identification purposes
+	uniqueID : function (separator) {
+
+		var delim = separator || "-";
+
+		function S4() {
+			return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+		}
+
+		return (S4() + S4() + delim + S4() + delim + S4() + delim + S4() + delim + S4() + S4() + S4());
 	}
 
 };
