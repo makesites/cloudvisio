@@ -1,4 +1,4 @@
-// @name cloudvisio - 0.6.0 (Sun, 21 Jul 2013 01:33:02 GMT)
+// @name cloudvisio - 0.6.0 (Sun, 21 Jul 2013 01:46:35 GMT)
 // @url https://github.com/makesites/cloudvisio
 
 // @author makesites
@@ -403,6 +403,23 @@ Cloudvisio.prototype._axisSchema = function( schema ){
 		// preserve existing axis
 		if(typeof this._axis[j] == "undefined") this._axis[j] = value;
 	}
+};
+
+
+// define the color spectrum
+Cloudvisio.prototype.add = function( axis ){
+	// convert to an array if necessary
+	axis = ( axis instanceof Array ) ? axis : [axis];
+	// loop through new axis
+	for( var i in axis ){
+		// check if there's an id assigned
+		if( typeof axis[i]._id == "undefined" ){
+			axis[i]._id = utils.uniqueID();
+		}
+	}
+	// merge with existing
+	this.models = this.models.concat( axis );
+
 };
 
 // set or retrieve the queries applied

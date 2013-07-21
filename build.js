@@ -27,6 +27,7 @@ concat({
 		'lib/constructor.js',
 		'lib/options.js',
 		'lib/data.js',
+		'lib/axis.js',
 		'lib/queries.js',
 		'lib/math.js',
 		'lib/regex.js',
