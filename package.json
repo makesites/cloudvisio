@@ -1,36 +1,36 @@
 {
-  "name": "cloudvisio",
-  "version": "0.6.0",
-  "description": "Visual Representation of cloud data",
-  "author": "makesites",
-  "contributors": [
-    { "name": "Makis Tracend", "email": "makis@makesit.es" }
-  ],
-  "homepage": "https://github.com/makesites/cloudvisio", 
-  "keywords": ["cloudvisio", "cloud", "visio", "visualize", "vector", "svg", "d3", "webgl", "visualization","graph", "json"],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/makesites/cloudvisio.git"
-  },
-  "bugs": {
-    "url": "https://github.com/makesites/cloudvisio/issues"
-  }, 
-  "licenses": [
-    {
-      "type": "Apache License, Version 2.0",
-      "url": "http://makesites.org/licenses/APACHE-2.0"
-    }
-  ], 
-  "engines": { "node": "0.8.x" }, 
-  "main": "index",
-  "dependencies": {
-    "d3": "3.x",
-	"jsdom" : "0.x"
-  }, 
-    "devDependencies" : {
-        "commander" : "1.x",
+	"name": "cloudvisio",
+	"version": "0.6.0",
+	"description": "Visual Representation of cloud data",
+	"author": "makesites",
+	"contributors": [
+		{ "name": "Makis Tracend", "email": "makis@makesit.es" }
+	],
+	"homepage": "https://github.com/makesites/cloudvisio",
+	"keywords": ["cloudvisio", "cloud", "visio", "visualize", "vector", "svg", "d3", "webgl", "visualization","graph", "json"],
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/makesites/cloudvisio.git"
+	},
+	"bugs": {
+		"url": "https://github.com/makesites/cloudvisio/issues"
+	},
+	"licenses": [
+		{
+			"type": "Apache License, Version 2.0",
+			"url": "http://makesites.org/licenses/APACHE-2.0"
+		}
+	],
+	"engines": { "node": "0.8.x" },
+	"main": "index",
+	"dependencies": {
+		"d3": "3.x",
+		"jsdom" : "0.x"
+	},
+	"devDependencies" : {
+		"commander" : "1.x",
 		"jshint" : "1.x",
-        "uglify-js" : "2.x",
+		"uglify-js" : "2.x",
 		"hbs" : "1.x"
-    }
+	}
 }
