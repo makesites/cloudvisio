@@ -1,3 +1,6 @@
+// dependencies
+var d3 = require('d3');
+
 // force chart
 var force = function( self ) {
 
@@ -175,5 +178,4 @@ force.prototype = {
 
 
 
-Cloudvisio.prototype.charts.force = force;
-
+module.exports = force;

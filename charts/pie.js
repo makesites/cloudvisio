@@ -1,4 +1,6 @@
-var arc = d3.svg.arc();
+// dependencies
+var d3 = require('d3'),
+	arc = d3.svg.arc();
 
 var pie = function( self ) {
 
@@ -120,6 +122,4 @@ pie.prototype = {
 };
 
 
-
-Cloudvisio.prototype.charts.pie = pie;
-
+module.exports = pie;

@@ -1,3 +1,6 @@
+// dependencies
+var d3 = require('d3');
+
 // stacked/bar chart
 var stack = function( self ) {
 
@@ -115,4 +118,5 @@ stack.prototype = {
 	}
 };
 
-Cloudvisio.prototype.charts.stack = stack;
+
+module.exports = stack;
