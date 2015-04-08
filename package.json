@@ -21,16 +21,10 @@
 			"url": "http://makesites.org/licenses/APACHE-2.0"
 		}
 	],
-	"engines": { "node": "0.8.x" },
+	"engines": { "node": ">=0.8.x" },
 	"main": "index",
 	"dependencies": {
 		"d3": "3.5.5",
 		"jsdom" : "4.1.0"
-	},
-	"devDependencies" : {
-		"commander" : "1.x",
-		"jshint" : "1.x",
-		"uglify-js" : "2.x",
-		"hbs" : "1.x"
 	}
 }
