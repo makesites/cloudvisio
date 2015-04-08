@@ -24,8 +24,8 @@
 	"engines": { "node": "0.8.x" },
 	"main": "index",
 	"dependencies": {
-		"d3": "3.x",
-		"jsdom" : "0.x"
+		"d3": "3.5.5",
+		"jsdom" : "4.1.0"
 	},
 	"devDependencies" : {
 		"commander" : "1.x",
