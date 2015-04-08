@@ -1,9 +1,8 @@
 {
 	"name": "cloudvisio",
-	"version": "0.6.0",
+	"version": "0.8.0",
 	"main": ["./build/cloudvisio.js"],
 	"dependencies": {
-		"d3" : "*",
 		"threejs" : "*"
 	}
 }
