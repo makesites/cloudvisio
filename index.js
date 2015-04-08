@@ -1,16 +1,7 @@
-var globals = ["document", "window", "d3"],
-	globalValues = {};
+// @name cloudvisio
+// @url https://github.com/makesites/cloudvisio
 
-globals.forEach(function(g) {
-	if (g in global) globalValues[g] = global[g];
-});
+// @author makesites
+// @license Apache License, Version 2.0
 
-require("./globals");
-require("./build/cloudvisio");
-
-module.exports = cloudvisio;
-
-globals.forEach(function(g) {
-	if (g in globalValues) global[g] = globalValues[g];
-	else delete global[g];
-});
+module.exports = require('./lib/main');
