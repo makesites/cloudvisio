@@ -2,9 +2,9 @@
 <html>
 <head>
 <title>Cloudvisio :: Forks example</title>
+<meta charset="utf8">
 <!-- Dependencies -->
 <script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js"></script>
 <!-- Cloudvisio lib -->
 <script type="text/javascript" src="../build/cloudvisio.js"></script>
 <!-- Example code -->
@@ -21,7 +21,7 @@ $(function(){
 });
 
 function requestUser(){
-	var user = prompt("Please enter your Github username","wycats");
+	var user = prompt("Please enter your Github username","tracend");
 	if (user!=null && user!=""){
 		getData( user );
 	}
