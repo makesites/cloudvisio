@@ -66,7 +66,7 @@ stack.prototype = {
 		//parse = d3.time.format("%m/%Y").parse,
 		//format = d3.time.format("%b");
 
-		// Add a label per date.
+		// Add a label per axis
 		svg.selectAll("text")
 			.data( nodes.labels )
 			.enter().append("svg:text")
@@ -91,28 +91,46 @@ stack.prototype = {
 		rule.append("svg:text")
 			.attr("x", -20)
 			.attr("dy", ".35em")
-			.text(d3.format(",d"));
+			.text(function(d) { return nodes.values[d].text; });
+			//.text(d3.format(",d"));
 
 	},
 
 	data: function(){
 		var self = this.self;
+		var labels = [], values = [], x;
 
-		var label = self._axis.label,
-			value = self._axis.value;
+		// check for the x axis
+		if( self._axis.x ){
+			x = self._axis.x;
+			// add label
+			labels.push( x );
+		}
 
-		var labels = self.models.map(function( data, i ){
-			return data[label];
-		});
+		// loop through axis
+		for( var label in self._axis ){
+			// the first axis is the x axis (unless it exists)
+			if( !x ){
+				x = self._axis[label];
+				// add label
+				labels.push(x);
+				continue;
+			}
+			if( label == "x" ) continue;
+			// add label
+			labels.push(label);
+			var key = self._axis[label];
+			// normalize data
+			var data = self.models.map(function( item, i ){
+				return { x : ( typeof item[x] == "number" ) ? item[x] : i, y : item[key], text: item[x] };
+			});
 
-		var values = self.models.map(function( data, i ){
-			return { x : i, y : data[value] };
-		});
-
+			values.push( data );
+		}
 		// in a stacked bar there's more than one passes from the models
 		return {
 			labels : labels,
-			values : [values]
+			values : values
 		};
 
 	}
