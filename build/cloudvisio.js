@@ -318,7 +318,7 @@ var stack = function( self ) {
 		// setup options
 		self.set( this.defaults );
 		// set axis
-		self._axisSchema( this.schema );
+		//self._axisSchema( this.schema );
 
 	};
 
@@ -327,8 +327,9 @@ stack.prototype = {
 	layout: "stack",
 
 	schema: {
-		label: "string",
-		value: "number"
+		x: "number",
+		y: "number",
+		//text: "string" // optional
 	},
 
 	defaults: {
@@ -376,7 +377,7 @@ stack.prototype = {
 		//parse = d3.time.format("%m/%Y").parse,
 		//format = d3.time.format("%b");
 
-		// Add a label per date.
+		// Add a label per axis
 		svg.selectAll("text")
 			.data( nodes.labels )
 			.enter().append("svg:text")
@@ -401,28 +402,45 @@ stack.prototype = {
 		rule.append("svg:text")
 			.attr("x", -20)
 			.attr("dy", ".35em")
+			//.text(function(d) { console.log("d", d);return nodes.values[d].text; });
 			.text(d3.format(",d"));
 
 	},
 
 	data: function(){
 		var self = this.self;
+		var labels = [], values = [], x;
+		// check for the x axis
+		if( self._axis.x ){
+			x = self._axis.x;
+			// add label
+			labels.push( x );
+		}
 
-		var label = self._axis.label,
-			value = self._axis.value;
+		// loop through axis
+		for( var key in self._axis ){
+			var label = self._axis[key];
+			// the first axis is the x axis (unless it exists)
+			if( !x ){
+				x = label;
+				// add label
+				labels.push( label );
+				continue;
+			}
+			if( key == "x" ) continue;
+			// add label
+			labels.push( label );
+			// normalize data
+			var data = self.models.map(function( item, i ){
+				return { x : ( typeof item[x] == "number" ) ? item[x] : i, y : item[label], text: item[x] };
+			});
 
-		var labels = self.models.map(function( data, i ){
-			return data[label];
-		});
-
-		var values = self.models.map(function( data, i ){
-			return { x : i, y : data[value] };
-		});
-
+			values.push( data );
+		}
 		// in a stacked bar there's more than one passes from the models
 		return {
 			labels : labels,
-			values : [values]
+			values : values
 		};
 
 	}
@@ -458,29 +476,78 @@ module.exports = {
 module.exports = require('./lib/main');
 
 },{"./lib/main":11}],6:[function(require,module,exports){
-var utils = require('./utils');
+(function(){var utils = require('./utils');
 
 var axis = {
 
-	// add a new axis
-	add: function( axis ){
-		// convert to an array if necessary
-		axis = ( axis instanceof Array ) ? axis : [axis];
-		// loop through new axis
-		for( var i in axis ){
-			// check if there's an id assigned
-			if( typeof axis[i]._id == "undefined" ){
-				axis[i]._id = utils.uniqueID();
-			}
+	_axisSchema: function( schema ){
+		// reset axis (conditionally)
+		//this._axis = {};
+		// remove old axis
+		for(var i in this._axis){
+			if(typeof schema[i] == "undefined") delete this._axis[i];
 		}
-		// merge with existing
-		this.models = this.models.concat( axis );
+		// add new axis
+		for(var j in schema){
+			// get the default value ( if set )
+			var value = ( this.options[j] ) ? this.options[j] : false;
+			// preserve existing axis
+			if(typeof this._axis[j] == "undefined") this._axis[j] = value;
+		}
+	},
+
+	// make an intelligent decision on what the next axis may be
+	_findAxis: function( type ){
+		// get the keys of the model
+		var keys = this.keys( this.models );
+		if( !keys ) return false;
+		var axis = utils.toArray( this._axis );
+		// loop through the keys
+		for( var i in keys ){
+			// check that the key hasn't been used
+			if( axis.indexOf( keys[i] ) > -1 ) continue;
+			// get type of field
+			if( type == this._findType( keys[i] )) return keys[i];
+		}
+		return false;
+	},
+
+	// process an item to match its keys with the schema
+	_matchAxis: function( item ){
+		// variables
+		var chart = this.chart();// get schema from chart
+		//var axis = this._axis;// existing axis
+		// prerequisite(s)
+		var used = [];
+		var missing = [];
+		for( var axis in chart.schema ){
+			if( this._axis[axis] ){
+				used.push( this._axis[axis] );
+				continue;
+			}
+			missing.push(axis);
+		}
+		// exit now if no further axis to process..
+		if( !missing.length ) return;
+		// loop through keys
+		for( var key in item ){
+			// convention: the first axis is always x (regardless of type)
+			if( chart.schema.x && !this._axis.x ){
+				this._axis.x = key;
+				continue;
+			}
+			// don't use the same key twice
+			if( used.indexOf( key ) > -1 ) continue;
+			// further processing? (using missing array?)
+			//this._axis[key] = key;
+		}
 	}
 
 }
 
 module.exports = axis;
 
+})()
 },{"./utils":17}],7:[function(require,module,exports){
 // charts
 var force = require('../charts/force'),
@@ -639,6 +706,27 @@ var data = {
 		return this;
 	},
 
+	// add a new item
+	add: function( item ){
+
+		// convert to an array if necessary
+		item = ( item instanceof Array ) ? item : [item];
+
+		// match axis (of first element )
+		this._matchAxis( item[0] );
+
+		// loop through data
+		for( var i in item ){
+			// check if there's an id assigned
+			if( typeof item[i]._id == "undefined" ){
+				item[i]._id = utils.uniqueID();
+			}
+		}
+
+		// merge data with existing
+		this.models = this.models.concat( item );
+	},
+
 	// return filtered data
 	_filteredData: function(){
 		var data = [];
@@ -690,7 +778,7 @@ var data = {
 	},
 
 	// set an axis key (or return the whole array
-	axis: function( key, value ){
+	axis: function( key, constant ){
 		// return the existing data if none is passed...
 		//if (!arguments.length) return Object.keys( this.models[0] || {} );
 		if (!arguments.length) return this._axis;
@@ -707,16 +795,21 @@ var data = {
 		for(var i in data){
 			// create model if necessary
 			if(typeof this.models[i] == "undefined" ) this.models[i] = { _id: utils.uniqueID() };
+			// FIX: fallback to value of selected key
+			var value = data[i][key] || data[i][ this._selectedField ] || false;
 
-			if(typeof value != "undefined"){
-				// if a value is passed just use that
-				this.models[i][key] = value;
-			} else if( typeof data[i][key] == "string" || typeof data[i][key] == "number"){
+			if(typeof constant != "undefined"){
+				// if a constant is passed just use that
+				this.models[i][key] = constant;
+			} else if( typeof value == "string" || typeof value == "number"){
 				// there's currenty a 1-1 match between the data length and the models length...
-				this.models[i][key] = data[i][key];
-			} else if( typeof data[i][key] == "object" ){
+				this.models[i][key] = value;
+			} else if( typeof value == "boolean" ){
+				// convert flag to numeric
+				this.models[i][key] = ( value === true ) ? 1 : 0;
+			} else if( typeof value == "object" ){
 				// by priority look up a desciptive key in the object
-				this.models[i][key] = data[i][key].value || data[i][key].name || data[i][key].title || data[i][key].id || data[i][key];
+				this.models[i][key] = value.value || value.name || value.title || value.id || value;
 			} else {
 				// not supporting any other types for now...
 				this.models[i][key] = null;
@@ -725,7 +818,14 @@ var data = {
 
 		}
 		// setup the _axis
-		if(typeof value != "undefined") this._axis[key] = value;
+		// check if this._axis[key] exists?
+		if( constant ){
+			this._axis[key] = constant;
+		} else if( value === data[i][ this._selectedField ] ){
+			this._axis[key] = this._selectedField;
+		} else {
+			this._axis[key] = key;
+		}
 		/*
 		for( var i in obj){
 			if( i == "chart" ){
@@ -886,6 +986,17 @@ var data = {
 		}
 	},
 
+	// export axis data in JSON-ready format
+	toJSON: function(){
+		// variables
+		var data = this.models || [];
+		// cleanup data
+		for( var i in data ){
+			delete data[i]._id;
+		}
+		// other tweaks?
+		return data;
+	},
 
 	// Internal
 	// - raw data container
@@ -895,22 +1006,6 @@ var data = {
 	// - the last selected field
 	_selectedField: false,
 
-
-	_axisSchema: function( schema ){
-		// reset axis (conditionally)
-		//this._axis = {};
-		// remove old axis
-		for(var i in this._axis){
-			if(typeof schema[i] == "undefined") delete this._axis[i];
-		}
-		// add new axis
-		for(var j in schema){
-			// get the default value ( if set )
-			var value = ( this.options[j] ) ? this.options[j] : false;
-			// preserve existing axis
-			if(typeof this._axis[j] == "undefined") this._axis[j] = value;
-		}
-	}
 }
 
 
@@ -1571,6 +1666,7 @@ var render = {
 		append = append || false;
 		// chart is a prerequisite
 		var chart = this.chart();
+
 		if( chart === null) return;
 
 		var options = {
@@ -1705,22 +1801,6 @@ var render = {
 
 		return svg;
 
-	},
-
-	// make an intelligent decision on what the next axis may be
-	_findAxis: function( type ){
-		// get the keys of the model
-		var keys = this.keys( this.models );
-		if( !keys ) return false;
-		var axis = utils.toArray( this._axis );
-		// loop through the keys
-		for( var i in keys ){
-			// check that the key hasn't been used
-			if( axis.indexOf( keys[i] ) > -1 ) continue;
-			// get type of field
-			if( type == this._findType( keys[i] )) return keys[i];
-		}
-		return false;
 	},
 
 	// get the type of the selected field
