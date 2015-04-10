@@ -8,7 +8,7 @@ var stack = function( self ) {
 		// setup options
 		self.set( this.defaults );
 		// set axis
-		self._axisSchema( this.schema );
+		//self._axisSchema( this.schema );
 
 	};
 
@@ -17,8 +17,9 @@ stack.prototype = {
 	layout: "stack",
 
 	schema: {
-		label: "string",
-		value: "number"
+		x: "number",
+		y: "number",
+		//text: "string" // optional
 	},
 
 	defaults: {
@@ -91,15 +92,14 @@ stack.prototype = {
 		rule.append("svg:text")
 			.attr("x", -20)
 			.attr("dy", ".35em")
-			.text(function(d) { return nodes.values[d].text; });
-			//.text(d3.format(",d"));
+			//.text(function(d) { console.log("d", d);return nodes.values[d].text; });
+			.text(d3.format(",d"));
 
 	},
 
 	data: function(){
 		var self = this.self;
 		var labels = [], values = [], x;
-
 		// check for the x axis
 		if( self._axis.x ){
 			x = self._axis.x;
@@ -108,21 +108,21 @@ stack.prototype = {
 		}
 
 		// loop through axis
-		for( var label in self._axis ){
+		for( var key in self._axis ){
+			var label = self._axis[key];
 			// the first axis is the x axis (unless it exists)
 			if( !x ){
-				x = self._axis[label];
+				x = label;
 				// add label
-				labels.push(x);
+				labels.push( label );
 				continue;
 			}
-			if( label == "x" ) continue;
+			if( key == "x" ) continue;
 			// add label
-			labels.push(label);
-			var key = self._axis[label];
+			labels.push( label );
 			// normalize data
 			var data = self.models.map(function( item, i ){
-				return { x : ( typeof item[x] == "number" ) ? item[x] : i, y : item[key], text: item[x] };
+				return { x : ( typeof item[x] == "number" ) ? item[x] : i, y : item[label], text: item[x] };
 			});
 
 			values.push( data );
