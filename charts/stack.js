@@ -71,7 +71,8 @@ stack.prototype = {
 		svg.selectAll("text")
 			.data( nodes.labels )
 			.enter().append("svg:text")
-			.attr("x", function(d) { return x(d) + x.rangeBand() / 2; })
+			//.attr("x", function(d) { return x(d) + x.rangeBand() / 2; })
+			.attr("x", function(d) { return x.rangeBand() / 2; })
 			.attr("y", 6)
 			.attr("text-anchor", "middle")
 			.attr("dy", ".71em")
@@ -122,7 +123,7 @@ stack.prototype = {
 			labels.push( label );
 			// normalize data
 			var data = self.models.map(function( item, i ){
-				return { x : ( typeof item[x] == "number" ) ? item[x] : i, y : item[label], text: item[x] };
+				return { x : ( typeof item[x] == "number" ) ? item[x] : i, y : parseInt( item[label], 10 ), text: item[x] };
 			});
 
 			values.push( data );
