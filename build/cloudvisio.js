@@ -37,8 +37,8 @@ force.prototype = {
 		var self = this.self;
 		var that = this;
 		var svg = d3.select( self.el + " "+ self.options.container);
-		var width = 1024,
-		height = 768;
+		var width = 4000,
+		height = 3000;
 
 		var data = this.nodes = this.data();
 
@@ -206,17 +206,17 @@ pie.prototype = {
 	},
 
 	defaults: {
-		r : 384, // radius, height/2
+		r : 1500, // radius, height/2
 		ir : 0,
-		textOffset: 100
+		textOffset: 500
 	},
 
 	constructor: pie,
 
 	render: function( append ){
 
-		var width = 1024, // internal (non-customizable) width
-			height = 768, // internal (non-customizable) height
+		var width = 4000, // internal (non-customizable) width
+			height = 3000, // internal (non-customizable) height
 			self = this.self,
 			data = this.data();
 
@@ -340,14 +340,14 @@ stack.prototype = {
 	render: function( append ){
 
 		var self = this.self;
-		var width = 1024,
-		height = 768;
+		var width = 4000,
+		height = 3000;
 
 		var nodes = this.data();
 
 		var svg = d3.select( self.el + " "+ self.options.container)
 				.append("svg:g")
-				.attr("transform", "translate(30,738)");
+				.attr("transform", "translate(0,3000)");
 
 		x = d3.scale.ordinal().rangeRoundBands([0, width]);
 		y = d3.scale.linear().range([0, height]);
@@ -363,16 +363,20 @@ stack.prototype = {
 			.enter().append("svg:g")
 			.attr("class", "valgroup")
 			.style("fill", function(d, i) { return self.color(i); })
-			.style("stroke", function(d, i) { return d3.rgb( self.color(i)).darker(); });
+			.style("stroke", function(d, i) { return d3.rgb( self.color(i)).darker(); })
+			.style("stroke-width", "5px");
 
-		// Add a rect for each date.
+
+		// Add a rect for each entry.
 		var rect = valgroup.selectAll("rect")
 			.data(function(d){return d;})
 			.enter().append("svg:rect")
 			.attr("x", function(d) { return x(d.x); })
 			.attr("y", function(d) { return -y(d.y0) - y(d.y); })
 			.attr("height", function(d) { return y(d.y); })
-			.attr("width", x.rangeBand());
+			.attr("width", x.rangeBand() )
+			.append("title")
+			.text(function(d) { return d.text; });
 
 		//parse = d3.time.format("%m/%Y").parse,
 		//format = d3.time.format("%b");
@@ -381,10 +385,29 @@ stack.prototype = {
 		svg.selectAll("text")
 			.data( nodes.labels )
 			.enter().append("svg:text")
-			.attr("x", function(d) { return x(d) + x.rangeBand() / 2; })
-			.attr("y", 6)
+			.attr("x", function(d) {
+				if( nodes.labels[0] == d ){
+					// first is x, horizontal
+					return (x.range().length / 2) * x.rangeBand() ; // width /2
+				} else {
+					// second is y, vertical
+					return - (height/2);
+				}
+			})
+			.attr("y", "-50")
+			.attr("transform" , function(d) {
+				if(  nodes.labels[0] == d ){
+					// first is x, horizontal
+					return "rotate(0)";
+				} else {
+					// second is y, vertical
+					return "rotate(90)";
+				}
+			})
 			.attr("text-anchor", "middle")
-			.attr("dy", ".71em")
+			.attr("dy", "-100px")
+			.attr("font-size", "150")
+			.style("fill-opacity", "0.6")
 			.text(function(d) { return d; });
 
 		// Add y-axis rules.
@@ -397,13 +420,19 @@ stack.prototype = {
 		rule.append("svg:line")
 			.attr("x2", width)
 			.style("stroke", function(d) { return d ? "#fff" : "#000"; })
+			.style("stroke-width", "5px")
 			.style("stroke-opacity", function(d) { return d ? 0.3 : null; });
 
 		rule.append("svg:text")
-			.attr("x", -20)
-			.attr("dy", ".35em")
+			.attr("x", "40px")
+			.attr("dy", "-20px")
+			.attr("font-size", "50")
+			.attr("fill", "#fff")
+			.style("stroke", "#ccc")
+			.style("stroke-width", "2px")
 			//.text(function(d) { console.log("d", d);return nodes.values[d].text; });
 			.text(d3.format(",d"));
+		/* .attr("x", function(d) { return x(d) + x.rangeBand() / 2; }) */
 
 	},
 
@@ -432,7 +461,7 @@ stack.prototype = {
 			labels.push( label );
 			// normalize data
 			var data = self.models.map(function( item, i ){
-				return { x : ( typeof item[x] == "number" ) ? item[x] : i, y : item[label], text: item[x] };
+				return { x : ( typeof item[x] == "number" ) ? item[x] : i, y : parseInt( item[label], 10 ), text: item[x] };
 			});
 
 			values.push( data );
@@ -445,7 +474,6 @@ stack.prototype = {
 
 	}
 };
-
 
 module.exports = stack;
 
@@ -740,9 +768,13 @@ var data = {
 	},
 
 	// load a dataset
-	parse: function( data ){
+	parse: function( data, options ){
+		// fallbacks
 		data = data || false;
+		options = options || {};
 		if(!data) return;
+		// optionally reset
+		if( options.reset ) this._axis = {};
 		// check if it's and array of objects
 		//if(data instanceof Array){
 		if(data.length != "undefined"){
@@ -1780,8 +1812,8 @@ var render = {
 	// creates the chart container
 	_container: function(){
 
-		var width = 1024,
-		height = 768;
+		var width = 4000,
+		height = 3000;
 
 		var svg = d3.select( this.el ).html("")
 			.append( this.options.container );
