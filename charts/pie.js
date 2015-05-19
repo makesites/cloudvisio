@@ -22,17 +22,17 @@ pie.prototype = {
 	},
 
 	defaults: {
-		r : 384, // radius, height/2
+		r : 1500, // radius, height/2
 		ir : 0,
-		textOffset: 100
+		textOffset: 500
 	},
 
 	constructor: pie,
 
 	render: function( append ){
 
-		var width = 1024, // internal (non-customizable) width
-			height = 768, // internal (non-customizable) height
+		var width = 4000, // internal (non-customizable) width
+			height = 3000, // internal (non-customizable) height
 			self = this.self,
 			data = this.data();
 

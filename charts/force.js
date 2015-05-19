@@ -36,8 +36,8 @@ force.prototype = {
 		var self = this.self;
 		var that = this;
 		var svg = d3.select( self.el + " "+ self.options.container);
-		var width = 1024,
-		height = 768;
+		var width = 4000,
+		height = 3000;
 
 		var data = this.nodes = this.data();
 
