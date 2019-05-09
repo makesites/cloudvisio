@@ -21,7 +21,7 @@
 			"url": "http://makesites.org/licenses/APACHE-2.0"
 		}
 	],
-	"engines": { "node": ">=0.8.x" },
+	"engines": { "node": ">=10.x.x" },
 	"main": "index",
 	"dependencies": {
 		"d3": "3.5.5",
