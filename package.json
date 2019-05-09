@@ -28,6 +28,6 @@
 		"jsdom" : "4.1.0"
 	},
 	"devDependencies": {
-		"request": "2.55.0"
+		"request": "2.88.0"
 	}
 }
